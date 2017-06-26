@@ -64,3 +64,15 @@ void MipsSimulatorClass::Memory_Access()
 void MipsSimulatorClass::Write_Back()
 {
 }
+
+void MipsSimulatorClass::Run(std::istream & codein, std::istream & fin, std::ostream & fout)
+{
+	readcode(codein);
+
+	//debug
+	//for (auto x : expr) {
+	//	std::clog << x << std::endl;
+	//}
+
+
+}

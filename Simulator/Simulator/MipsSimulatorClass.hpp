@@ -33,8 +33,6 @@ public:
 	void Memory_Access();
 	void Write_Back();
 
-	void Run(std::istream & codein, std::istream & fin, std::ostream & fout) {
-
-	}
+	void Run(std::istream & codein, std::istream & fin, std::ostream & fout);
 };
 #endif //MIPSSIMULATORCLASS

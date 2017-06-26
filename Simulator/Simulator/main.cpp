@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "MipsSimulatorClass.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {
 	string code_path, input_path, output_path;
-	if (argc < 3)
-	{
+	if (argc < 4) {
 		cout << "for usage as an non-interactive tool: MipsSimulator <your Mips source code> <inputfile> <outputfile>" << endl;
 		cout << "Please input your source code path:";
 		getline(cin, code_path);
@@ -24,8 +24,11 @@ int main(int argc, char *argv[]) {
 	ifstream code(code_path);
 	ifstream fin(input_path);
 	ofstream fout(output_path);
-	MipsSimulator.run(code, fin, fout);
+	MipsSimulatorClass MipsSimulator;
+	MipsSimulator.Run(code, fin, fout);
 	code.close();
 	fin.close();
 	fout.close();
+	
+	return 0;
 }
