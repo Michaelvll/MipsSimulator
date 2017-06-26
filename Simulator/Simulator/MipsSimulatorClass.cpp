@@ -39,4 +39,28 @@ MipsSimulatorClass::MipsSimulatorClass()
 
 void MipsSimulatorClass::readcode(std::istream & codein)
 {
+	std::string tmps;
+	while (getline(codein, tmps)) {
+		expr.push_back(tmps);
+	}
+}
+
+void MipsSimulatorClass::Instruction_Fetch()
+{
+}
+
+void MipsSimulatorClass::Instruction_Decode_Data_Preparation()
+{
+}
+
+void MipsSimulatorClass::Execution()
+{
+}
+
+void MipsSimulatorClass::Memory_Access()
+{
+}
+
+void MipsSimulatorClass::Write_Back()
+{
 }

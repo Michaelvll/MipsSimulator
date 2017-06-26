@@ -18,11 +18,12 @@ private:
 	};
 	unsigned char memory[4 * 1024 * 1024];
 	int reg[32] = { 0 };
-	long long clock = 0;
+	int &PC = reg[reg_num::sp];
 	std::vector<std::string> expr;
 	std::unordered_map<std::string, int> reg_num_tab;
 	std::unordered_map<std::string, int> label_table;
 
+public:
 	MipsSimulatorClass();
 
 	void readcode(std::istream &codein);
