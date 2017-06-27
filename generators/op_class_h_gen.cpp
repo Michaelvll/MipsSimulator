@@ -11,7 +11,6 @@ int main() {
         "mflo,nop,syscall";
 
     int pos = 0;
-    int cnt = 0;
     for (; pos < s.length(); ++pos) {
         for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ','); ++pos)
             ;
@@ -20,9 +19,14 @@ int main() {
         for (; s[pos] != ',' && s[pos] != ' ' && pos < s.length(); ++pos) {
             tmp += s[pos];
         }
-        cout << "op_num_tab[\"" << tmp << "\"] = ";
-        cout << "op_num::" << tmp << ";" << endl;
-        ++cnt;
+        tmp[0] = toupper(tmp[0]);
+        cout
+            << "class " + tmp + " : public Command_Base {\n"
+            << "public:\n"
+            << "\tvoid exec(int r[3], MipsSimulatorClass::r_state rstate[3]);\n"
+            << "};\n"
+            << endl;
+        ;
     }
     return 0;
 }

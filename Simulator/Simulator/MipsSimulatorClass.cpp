@@ -1,15 +1,14 @@
 #include "MipsSimulatorClass.h"
 #include <vector>
+#include <fstream>
 using std::clog;
 using std::endl;
 using std::vector;
 
 
-MipsSimulatorClass::Token::Token(int _op, int _rs, int _rt, int _rd)
-	: op(_op), rs(_rs), rt(_rt), rd(_rd) {}
-
 MipsSimulatorClass::MipsSimulatorClass()
 {
+
 	// Initialize the unordered_map of register .no
 	reg_num_tab["zero"] = reg_num::zero;
 	reg_num_tab["at"] = reg_num::at;
@@ -48,7 +47,6 @@ MipsSimulatorClass::MipsSimulatorClass()
 	//Initialize the operation table from string to op_num
 	op_num_tab["add"] = op_num::add;
 	op_num_tab["addu"] = op_num::addu;
-	op_num_tab["addiu"] = op_num::addiu;
 	op_num_tab["sub"] = op_num::sub;
 	op_num_tab["subu"] = op_num::subu;
 	op_num_tab["mul"] = op_num::mul;
@@ -104,62 +102,68 @@ MipsSimulatorClass::MipsSimulatorClass()
 
 
 	// Initialize the operation table from op_num to class
-	/*op_class_tab[op_num::add] = new Add;
-	op_class_tab[op_num::addu] = new Addu;
-	op_class_tab[op_num::addiu] = new Addiu;
-	op_class_tab[op_num::sub] = new Sub;
-	op_class_tab[op_num::subu] = new Subu;
-	op_class_tab[op_num::mul] = new Mul;
-	op_class_tab[op_num::mulu] = new Mulu;
-	op_class_tab[op_num::mul2] = new Mul2;
-	op_class_tab[op_num::mulu2] = new Mulu2;
-	op_class_tab[op_num::div] = new Div;
-	op_class_tab[op_num::divu] = new Divu;
-	op_class_tab[op_num::div2] = new Div2;
-	op_class_tab[op_num::divu2] = new Divu2;
-	op_class_tab[op_num::xor] = new Xor;
-	op_class_tab[op_num::xoru] = new Xoru;
-	op_class_tab[op_num::neg] = new Neg;
-	op_class_tab[op_num::negu] = new Negu;
-	op_class_tab[op_num::rem] = new Rem;
-	op_class_tab[op_num::remu] = new Remu;
-	op_class_tab[op_num::li] = new Li;
-	op_class_tab[op_num::seq] = new Seq;
-	op_class_tab[op_num::sge] = new Sge;
-	op_class_tab[op_num::sgt] = new Sgt;
-	op_class_tab[op_num::sle] = new Sle;
-	op_class_tab[op_num::slt] = new Slt;
-	op_class_tab[op_num::sne] = new Sne;
-	op_class_tab[op_num::b] = new B;
-	op_class_tab[op_num::beq] = new Beq;
-	op_class_tab[op_num::bne] = new Bne;
-	op_class_tab[op_num::bge] = new Bge;
-	op_class_tab[op_num::ble] = new Ble;
-	op_class_tab[op_num::bgt] = new Bgt;
-	op_class_tab[op_num::blt] = new Blt;
-	op_class_tab[op_num::beqz] = new Beqz;
-	op_class_tab[op_num::bnez] = new Bnez;
-	op_class_tab[op_num::blez] = new Blez;
-	op_class_tab[op_num::bgez] = new Bgez;
-	op_class_tab[op_num::bgtz] = new Bgtz;
-	op_class_tab[op_num::bltz] = new Bltz;
-	op_class_tab[op_num::j] = new J;
-	op_class_tab[op_num::jr] = new Jr;
-	op_class_tab[op_num::jal] = new Jal;
-	op_class_tab[op_num::jalr] = new Jalr;
-	op_class_tab[op_num::la] = new La;
-	op_class_tab[op_num::lb] = new Lb;
-	op_class_tab[op_num::lh] = new Lh;
-	op_class_tab[op_num::lw] = new Lw;
-	op_class_tab[op_num::sb] = new Sb;
-	op_class_tab[op_num::sh] = new Sh;
-	op_class_tab[op_num::sw] = new Sw;
-	op_class_tab[op_num::move] = new Move;
-	op_class_tab[op_num::mfhi] = new Mfhi;
-	op_class_tab[op_num::mflo] = new Mflo;
-	op_class_tab[op_num::nop] = new Nop;
-	op_class_tab[op_num::syscall] = new Syscall;*/
+	op_class_tab[op_num::add] = new CommandClass::Add;
+	op_class_tab[op_num::addu] = new CommandClass::Addu;
+	op_class_tab[op_num::sub] = new CommandClass::Sub;
+	op_class_tab[op_num::subu] = new CommandClass::Subu;
+	op_class_tab[op_num::mul] = new CommandClass::Mul;
+	op_class_tab[op_num::mulu] = new CommandClass::Mulu;
+	op_class_tab[op_num::mul2] = new CommandClass::Mul2;
+	op_class_tab[op_num::mulu2] = new CommandClass::Mulu2;
+	op_class_tab[op_num::div] = new CommandClass::Div;
+	op_class_tab[op_num::divu] = new CommandClass::Divu;
+	op_class_tab[op_num::div2] = new CommandClass::Div2;
+	op_class_tab[op_num::divu2] = new CommandClass::Divu2;
+	op_class_tab[op_num::xor] = new CommandClass::Xor;
+	op_class_tab[op_num::xoru] = new CommandClass::Xoru;
+	op_class_tab[op_num::neg] = new CommandClass::Neg;
+	op_class_tab[op_num::negu] = new CommandClass::Negu;
+	op_class_tab[op_num::rem] = new CommandClass::Rem;
+	op_class_tab[op_num::remu] = new CommandClass::Remu;
+	op_class_tab[op_num::li] = new CommandClass::Li;
+	op_class_tab[op_num::seq] = new CommandClass::Seq;
+	op_class_tab[op_num::sge] = new CommandClass::Sge;
+	op_class_tab[op_num::sgt] = new CommandClass::Sgt;
+	op_class_tab[op_num::sle] = new CommandClass::Sle;
+	op_class_tab[op_num::slt] = new CommandClass::Slt;
+	op_class_tab[op_num::sne] = new CommandClass::Sne;
+	op_class_tab[op_num::b] = new CommandClass::B;
+	op_class_tab[op_num::beq] = new CommandClass::Beq;
+	op_class_tab[op_num::bne] = new CommandClass::Bne;
+	op_class_tab[op_num::bge] = new CommandClass::Bge;
+	op_class_tab[op_num::ble] = new CommandClass::Ble;
+	op_class_tab[op_num::bgt] = new CommandClass::Bgt;
+	op_class_tab[op_num::blt] = new CommandClass::Blt;
+	op_class_tab[op_num::beqz] = new CommandClass::Beqz;
+	op_class_tab[op_num::bnez] = new CommandClass::Bnez;
+	op_class_tab[op_num::blez] = new CommandClass::Blez;
+	op_class_tab[op_num::bgez] = new CommandClass::Bgez;
+	op_class_tab[op_num::bgtz] = new CommandClass::Bgtz;
+	op_class_tab[op_num::bltz] = new CommandClass::Bltz;
+	op_class_tab[op_num::j] = new CommandClass::J;
+	op_class_tab[op_num::jr] = new CommandClass::Jr;
+	op_class_tab[op_num::jal] = new CommandClass::Jal;
+	op_class_tab[op_num::jalr] = new CommandClass::Jalr;
+	op_class_tab[op_num::la] = new CommandClass::La;
+	op_class_tab[op_num::lb] = new CommandClass::Lb;
+	op_class_tab[op_num::lh] = new CommandClass::Lh;
+	op_class_tab[op_num::lw] = new CommandClass::Lw;
+	op_class_tab[op_num::sb] = new CommandClass::Sb;
+	op_class_tab[op_num::sh] = new CommandClass::Sh;
+	op_class_tab[op_num::sw] = new CommandClass::Sw;
+	op_class_tab[op_num::move] = new CommandClass::Move;
+	op_class_tab[op_num::mfhi] = new CommandClass::Mfhi;
+	op_class_tab[op_num::mflo] = new CommandClass::Mflo;
+	op_class_tab[op_num::nop] = new CommandClass::Nop;
+	op_class_tab[op_num::syscall] = new CommandClass::Syscall;
 
+
+}
+MipsSimulatorClass::~MipsSimulatorClass()
+{
+	for (auto x : op_class_tab) {
+		delete x;
+	}
 }
 template<typename T>
 inline T MipsSimulatorClass::Get_Next_Num(const string &s, int &pos)
@@ -434,10 +438,12 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	/// Process the Mips code from the stream codein, which comes from a whole file
 
 	vector<string> preExpr;
-	clog << "===============================================================" << endl;
+	clog << "===================================================================================================" << endl;
+	clog << "===================================================================================================" << endl;
 	clog << "Code reading START" << endl;
-
+	clog << "===================================================================================================" << endl;
 	clog << "First scanning START" << endl;
+	clog << "===================================================================================================" << endl;
 
 	// First scanning of the source code
 	// Execute all the command in .data and record the mem_label into a unordered map
@@ -450,14 +456,14 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	int linenum = 0;
 
 	while (getline(codein, tmps)) {
+		clog << "---------------------------------------------------------------" << endl;
 		// For clog
 		++linenum;
-		clog << "---------------------------------------------------------------" << endl;
 
 		if (state == state_num::text) {
 			// Get the position of the text labels
 
-			clog << "Start a Data_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
+			clog << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
 			clog << "The origin line is \"" << tmps << "\"" <<endl;
 
 			bool re = Text_labelProcess(tmps, expr_pos, state);
@@ -469,19 +475,41 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 		}
 		else {
 			// state == data
-			clog << "Start a Data_Process of the Line " << linenum << " in " << (state == state_num::data? "data":"text") << " mod"<< endl;
+			clog << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data? "data":"text") << " mod"<< endl;
 			clog << "The origin line is \"" << tmps << "\"" << endl;
 			Data_Process(tmps, mem_pos, state);
 
 		}
-		clog << "First scanning COMPLETE!" << endl;
 	}
+	// Output preExpr for test
+	std::ofstream pE("C:/AResource/PPCA/mips/Data/preExpr.out");
+	for (auto x : preExpr) pE << x << endl;
+	pE.close();
 
-	clog << "===============================================================" << endl;
+	clog << "First scanning COMPLETE!" << endl;
+
+	clog << "===================================================================================================" << endl;
 	clog << "Second scanning START" << endl;
+	clog << "===================================================================================================" << endl;
 
 	// Second scanning of the preExpr
+	// Change the string into tokens
+	// Change the labels into address
+	
+	// For clog
+	int nowline = 0;
 
+	for (auto x : preExpr) {
+		// For clog
+		++nowline;
+
+		clog << "Start a Token_Process of the Line " << nowline << " in preEpr" << endl;
+		int pos = 0;
+		Token token;
+		string op = Get_Next_String(x, pos);
+		
+
+	}
 	//remember to figure out which mul, mulu, div and divu the command is!!!!!!!!!!!!!!!!!!!!
 
 	preExpr.clear();

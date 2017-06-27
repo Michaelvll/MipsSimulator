@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-//#include "CommandClass.h"
+#include "CommandClass.h"
 
 using std::string;
 
@@ -12,20 +12,25 @@ class MipsSimulatorClass;
 
 class MipsSimulatorClass {
 public:
+	enum r_state {
+		none, regi, immi
+	};
 	struct Token {
 		int op;
-		int rs, rt, rd;
-		Token(int _op, int _rs = 0, int _rt = 0, int _rd = 0);
+		int r[3];
+		r_state rstate[3];
 	};
 
 private:
 	enum op_num {
-		add, addu, addiu, sub, subu, mul, mulu,mul2,mulu2, div,
-		divu, div2, divu2, xor, xoru, neg, negu, rem, remu, li, seq,
-		sge, sgt, sle, slt, sne, b, beq, bne, bge, ble, bgt, blt,
-		beqz, bnez, blez, bgez, bgtz, bltz, j, jr, jal, jalr, la,
-		lb, lh, lw, sb, sh, sw, move, mfhi, mflo, nop, syscall
-	};
+		add, addu, sub, subu, mul, mulu,mul2,mulu2, div,divu, div2, 
+		divu2, xor, xoru, neg, negu, rem, remu, li, seq, sge, sgt, 
+		sle,slt,sne, b, beq, bne, bge, ble, bgt, blt, beqz, bnez, blez, bgez, 
+		bgtz,bltz, j, jr, jal, jalr, la, lb, lh, lw, sb, sh, sw, move, mfhi, 
+		mflo,nop,syscall
+	}; 
+	// Command that different from the given ones (each one represents a serie:
+	// add, sub, mul, div, xor, div
 	enum state_num {
 		data, text
 	};
@@ -43,7 +48,7 @@ private:
 	
 	std::vector<Token> expr;
 	std::unordered_map<string, op_num> op_num_tab;
-	//Command_Base* op_class_tab[op_num::syscall+1];
+	CommandClass::Command_Base *op_class_tab[op_num::syscall+1];
 	std::unordered_map<string, int> reg_num_tab;
 	std::unordered_map<string, int> txt_lab_tab;
 	std::unordered_map<string, int> mem_lab_tab;
@@ -57,6 +62,7 @@ private:
 
 public:
 	MipsSimulatorClass();
+	~MipsSimulatorClass();
 
 	void readcode(std::istream &codein);
 	void Instruction_Fetch();
