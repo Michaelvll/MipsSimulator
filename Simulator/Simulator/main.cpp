@@ -1,34 +1,31 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "MipsSimulatorClass.hpp"
+#include "MipsSimulatorClass.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {
-	string code_path, input_path, output_path;
-	if (argc < 4) {
-		cout << "for usage as an non-interactive tool: MipsSimulator <your Mips source code> <inputfile> <outputfile>" << endl;
-		cout << "Please input your source code path:";
-		getline(cin, code_path);
-		cout << "Please input your input file path:";
-		getline(cin, input_path);
-		cout << "Please input the output file path:";
-		getline(cin, output_path);
-	}
-	else {
-		code_path = string(argv[1]);
-		input_path = string(argv[2]);
-		output_path = string(argv[3]);
-	}
+	//debug
+	string code_path = "C:/AResource/PPCA/mips/Data/testsuit-1/array_test2-mahaojun.s", 
+		output_path = "C:/AResource/PPCA/mips/Data/test.txt";
+
+	//if (argc < 2) {
+	//	cout << "for usage as an non-interactive tool: mipssimulator <your mips source code> <output path>" << endl;
+	//	cout << "please input your source code path:";
+	//	getline(cin, code_path);
+	//	cout << "please input your output path:";
+	//	getline(cin, output_path);
+	//}
+	//else {
+	//	code_path = string(argv[1]);
+	//}
 
 	ifstream code(code_path);
-	ifstream fin(input_path);
 	ofstream fout(output_path);
 	MipsSimulatorClass MipsSimulator;
-	MipsSimulator.Run(code, fin, fout);
+	MipsSimulator.exec(code, fout);
 	code.close();
-	fin.close();
 	fout.close();
-	
+
 	return 0;
 }
