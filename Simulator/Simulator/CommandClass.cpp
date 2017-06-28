@@ -1,219 +1,449 @@
 #include "CommandClass.h"
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 
-void CommandClass::Add::exec(int r[3], int rstate[3])
+/// If return false && r[0] == 1 || 5, then stop the instruction before
+/// If return false && r[0] == -1, then stop the program
+/// if return false && r[0] == -2, then stop the program and return r[2]
+/// Label is then in r[1]
+bool CommandClass::Add::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = static_cast<int>(r[1]) + static_cast<int>(r[2]);
+	return true;
 }
 
-void CommandClass::Addu::exec(int r[3], int rstate[3])
+bool CommandClass::Addu::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<unsigned> (r[1])
+	r[1] = r[1] + r[2];
+	return true;
 }
 
-void CommandClass::Sub::exec(int r[3], int rstate[3])
+bool CommandClass::Sub::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = static_cast<int>(r[1]) - static_cast<int>(r[2]);
+	return true;
 }
 
-void CommandClass::Subu::exec(int r[3], int rstate[3])
+bool CommandClass::Subu::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<unsigned> (r[1])
+	r[1] = r[1] - r[2];
+	return true;
 }
 
-void CommandClass::Mul::exec(int r[3], int rstate[3])
+bool CommandClass::Mul::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	int a = static_cast<int>(r[1]) * static_cast<int>(r[2]);
+	r[1] = static_cast<long long> (a);
+	return true;
 }
 
-void CommandClass::Mulu::exec(int r[3], int rstate[3])
+bool CommandClass::Mulu::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<unsigned> (long long)
+	r[1] = static_cast<unsigned>(r[1]) * static_cast<unsigned>(r[2]);
+	return true;
 }
 
-void CommandClass::Mul2::exec(int r[3], int rstate[3])
+bool CommandClass::Mul2::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as s = reinterpret_cast<char*> (r[1]); char s1[2] = {s[0],s[1]return true;}; lo = *(reinterpret_cast<unsigned*> (s1));...
+	r[1] = r[1] * r[2];
+	return true;
 }
 
-void CommandClass::Mulu2::exec(int r[3], int rstate[3])
+bool CommandClass::Mulu2::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as s = reinterpret_cast<char*> (r[1]); char s1[2] = {s[0],s[1]return true;}; lo = *(reinterpret_cast<unsigned*> (s1));...
+	unsigned long long a = r[1], b = r[2];
+	unsigned long long c = a * b;
+	r[1] = *(reinterpret_cast<long long*>(c));
+	return true;
 }
 
-void CommandClass::Div::exec(int r[3], int rstate[3])
+bool CommandClass::Div::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = static_cast<int>(r[1]) / static_cast<int>(r[2]);
+	return true;
 }
 
-void CommandClass::Divu::exec(int r[3], int rstate[3])
+bool CommandClass::Divu::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = r[1] / r[2];
+	return true;
 }
 
-void CommandClass::Div2::exec(int r[3], int rstate[3])
+bool CommandClass::Div2::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as s = reinterpret_cast<char*> (r[1]); 
+	/// char s1[2] = {s[0],s[1]}; lo = *(reinterpret_cast<unsigned*> (s1));...
+	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
+	r[1] = a / b;
+	r[1] |= (static_cast<unsigned long long>(a % b) << 32);
+	return true;
 }
 
-void CommandClass::Divu2::exec(int r[3], int rstate[3])
+bool CommandClass::Divu2::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as s = reinterpret_cast<char*> (r[1]); 
+	/// char s1[2] = {s[0],s[1]}; lo = *(reinterpert_cast<unsigned*> (s1));...
+	unsigned a = static_cast<unsigned>(r[1]), b = static_cast<unsigned>(r[2]);
+	r[1] = a / b;
+	r[1] |= (static_cast<unsigned long long>(a % b) << 32);
+	return true;
 }
 
-void CommandClass::Xor::exec(int r[3], int rstate[3])
+bool CommandClass::Xor::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = r[1] ^ r[2];
+	return true;
 }
 
-void CommandClass::Xoru::exec(int r[3], int rstate[3])
+bool CommandClass::Xoru::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = r[1] ^ r[2];
+	return true;
 }
 
-void CommandClass::Neg::exec(int r[3], int rstate[3])
+bool CommandClass::Neg::exec(long long r[4])
 {
+	/// Input r[1] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = -r[1];
+	return true;
 }
 
-void CommandClass::Negu::exec(int r[3], int rstate[3])
+bool CommandClass::Negu::exec(long long r[4])
 {
+	/// Input r[1] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<unsigned> (r[1])
+	unsigned a = static_cast<unsigned> (r[1]);
+	unsigned b = -a;
+	r[1] = static_cast<long long> (b);
+	return true;
 }
 
-void CommandClass::Rem::exec(int r[3], int rstate[3])
+bool CommandClass::Rem::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = r[1] % r[2];
+	return true;
 }
 
-void CommandClass::Remu::exec(int r[3], int rstate[3])
+bool CommandClass::Remu::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
+	/// Output r[1] which can be used as static_cast<unsigned> (r[1])
+	r[1] = r[1] % r[2];
+	return true;
 }
 
-void CommandClass::Li::exec(int r[3], int rstate[3])
+bool CommandClass::Li::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Seq::exec(int r[3], int rstate[3])
+bool CommandClass::Seq::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] == r[2] ? 1 : 0);
+	return true;
 }
 
-void CommandClass::Sge::exec(int r[3], int rstate[3])
+bool CommandClass::Sge::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] >= r[2]) ? 1 : 0;
+	return true;
 }
 
-void CommandClass::Sgt::exec(int r[3], int rstate[3])
+bool CommandClass::Sgt::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] > r[2]) ? 1 : 0;
+	return true;
 }
 
-void CommandClass::Sle::exec(int r[3], int rstate[3])
+bool CommandClass::Sle::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] <= r[2]) ? 1 : 0;
+	return true;
 }
 
-void CommandClass::Slt::exec(int r[3], int rstate[3])
+bool CommandClass::Slt::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] < r[2]) ? 1 : 0;
+	return true;
 }
 
-void CommandClass::Sne::exec(int r[3], int rstate[3])
+bool CommandClass::Sne::exec(long long r[4])
 {
+	/// Input r[1] and r[2] which should be static_cast<long long> (int)
+	/// Output r[1] which can be used as static_cast<int> (r[1])
+	r[1] = (r[1] != r[2]) ? 1 : 0;
+	return true;
 }
 
-void CommandClass::B::exec(int r[3], int rstate[3])
+bool CommandClass::B::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[1] = r[0];
+	r[0] = 1;
+	return false;
 }
 
-void CommandClass::Beq::exec(int r[3], int rstate[3])
+bool CommandClass::Beq::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] == r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Bne::exec(int r[3], int rstate[3])
+bool CommandClass::Bne::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] != r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Bge::exec(int r[3], int rstate[3])
+bool CommandClass::Bge::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] >= r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Ble::exec(int r[3], int rstate[3])
+bool CommandClass::Ble::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] <= r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Bgt::exec(int r[3], int rstate[3])
+bool CommandClass::Bgt::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] > r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Blt::exec(int r[3], int rstate[3])
+bool CommandClass::Blt::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] < r[1]) ? 1 : 0;
+	r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Beqz::exec(int r[3], int rstate[3])
+bool CommandClass::Beqz::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] == 0) ? 1 : 0; r[1] = r[2];
+	return false;
 }
 
-void CommandClass::Bnez::exec(int r[3], int rstate[3])
+bool CommandClass::Bnez::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] != 0) ? 1 : 0;
+	return false;
 }
 
-void CommandClass::Blez::exec(int r[3], int rstate[3])
+bool CommandClass::Blez::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] <= 0) ? 1 : 0;
+	return false;
 }
 
-void CommandClass::Bgez::exec(int r[3], int rstate[3])
+bool CommandClass::Bgez::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] >= 0) ? 1 : 0;
+	return false;
 }
 
-void CommandClass::Bgtz::exec(int r[3], int rstate[3])
+bool CommandClass::Bgtz::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] > 0) ? 1 : 0;
+	return false;
 }
 
-void CommandClass::Bltz::exec(int r[3], int rstate[3])
+bool CommandClass::Bltz::exec(long long r[4])
 {
+	/// Input r[0] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[0] = (r[0] < 0) ? 1 : 0;
+	return false;
 }
 
-void CommandClass::J::exec(int r[3], int rstate[3])
+bool CommandClass::J::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[1] = r[0];
+	r[0] = 1;
+	return false;
 }
 
-void CommandClass::Jr::exec(int r[3], int rstate[3])
+bool CommandClass::Jr::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[1] = r[0];
+	r[0] = 1;
+	return false;
 }
 
-void CommandClass::Jal::exec(int r[3], int rstate[3])
+bool CommandClass::Jal::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[1] = r[0];
+	r[0] = 1;
+	return false;
 }
 
-void CommandClass::Jalr::exec(int r[3], int rstate[3])
+bool CommandClass::Jalr::exec(long long r[4])
 {
+	/// Input r[0] and r[1] which should be static_cast<long long> (int)
+	/// Output r[0], if (r[0]) goto r[1]
+	r[1] = r[0];
+	r[0] = 1;
+	return false;
 }
 
-void CommandClass::La::exec(int r[3], int rstate[3])
+bool CommandClass::La::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Lb::exec(int r[3], int rstate[3])
+bool CommandClass::Lb::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Lh::exec(int r[3], int rstate[3])
+bool CommandClass::Lh::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Lw::exec(int r[3], int rstate[3])
+bool CommandClass::Lw::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Sb::exec(int r[3], int rstate[3])
+bool CommandClass::Sb::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Sh::exec(int r[3], int rstate[3])
+bool CommandClass::Sh::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Sw::exec(int r[3], int rstate[3])
+bool CommandClass::Sw::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Move::exec(int r[3], int rstate[3])
+bool CommandClass::Move::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Mfhi::exec(int r[3], int rstate[3])
+bool CommandClass::Mfhi::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Mflo::exec(int r[3], int rstate[3])
+bool CommandClass::Mflo::exec(long long r[4])
 {
+	return true;
 }
 
-void CommandClass::Nop::exec(int r[3], int rstate[3])
+bool CommandClass::Nop::exec(long long r[4])
 {
+	r[0] = 5;
+	return false;
 }
 
-void CommandClass::Syscall::exec(int r[3], int rstate[3])
+bool CommandClass::Syscall::exec(long long r[4])
 {
+	/// r[0] is the the num of $v0
+	/// r[1] is the content of $v0
+	/// r[2] is the content of $a0
+	/// r[3] is the content of $a1
+
+	switch (r[1]) {
+	case 1:
+		cout << r[1] << endl;
+		break;
+	case 5:
+		cin >> r[1];
+		break;
+	case 10:
+		r[0] = -1;
+		break;
+	case 17:
+		r[0] = -2;
+		break;
+	}
+	return false;
 }
 
-
+bool CommandClass::Empty::exec(long long r[4])
+{
+	return false;
+}

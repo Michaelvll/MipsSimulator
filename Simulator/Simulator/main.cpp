@@ -4,6 +4,8 @@
 #include "MipsSimulatorClass.h"
 using namespace std;
 
+MipsSimulatorClass MipsSimulator;
+
 int main(int argc, char *argv[]) {
 	//debug
 	string code_path = "C:/AResource/PPCA/mips/Data/testsuit-1/array_test2-mahaojun.s", 
@@ -22,7 +24,7 @@ int main(int argc, char *argv[]) {
 
 	ifstream code(code_path);
 	ofstream fout(output_path);
-	MipsSimulatorClass MipsSimulator;
+
 	MipsSimulator.exec(code, fout);
 	code.close();
 	fout.close();

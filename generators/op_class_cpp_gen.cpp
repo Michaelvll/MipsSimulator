@@ -21,7 +21,7 @@ int main() {
         }
         tmp[0] = toupper(tmp[0]);
         cout << "void CommandClass::" + tmp +
-                    "::exec(int r[3], MipsSimulatorClass::r_state "
+                    "::exec(long long r[3], int "
                     "rstate[3])\n{\n}\n "
              << endl;
     }
