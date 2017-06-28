@@ -18,7 +18,7 @@ public:
 	struct Token {
 		int op;
 		int r[3];
-		int offset[3];
+		int offset;
 		r_state rstate[3];
 	};
 
@@ -59,14 +59,15 @@ private:
 	string Get_Next_String(const string &s, int &pos);
 	string String_Fetch(const string &s);
 	bool isReg(const string &s);
-	bool Text_labelProcess(const string &s, int &expr_pos, state_num &state);
-	void Data_Process(string s, int &mem_pos, state_num &state);
+	bool Text_labelProcess(const string &s, int &expr_pos, state_num &state, std::ofstream &log);
+	void Data_Process(string s, int &mem_pos, state_num &state, std::ofstream &log);
 
 public:
 	MipsSimulatorClass();
 	~MipsSimulatorClass();
 
 	void readcode(std::istream &codein);
+
 	void Instruction_Fetch();
 	void Instruction_Decode_Data_Preparation();
 	void Execution();
