@@ -171,7 +171,7 @@ inline T MipsSimulatorClass::Get_Next_Num(const string &s, int &pos)
 	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t'; ++pos);
 	T n = 0;
 	bool neg = false;
-	if (s[pos] == '-') neg = true;
+	if (s[pos] == '-') neg = true,++pos;
 	for (; s[pos] <= '9' && s[pos] >= '0'; ++pos) {
 		n *= 10;
 		n += s[pos] - '0';
@@ -184,9 +184,9 @@ inline T MipsSimulatorClass::Get_Next_Num(const string &s, int &pos)
 inline string MipsSimulatorClass::Get_Next_String(const string &s, int &pos)
 {
 	string op;
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' ||s[pos] =='\t'; ++pos);
-	for (; s[pos] != ' ' && s[pos] != ':' && s[pos] != 0; ++pos) op += s[pos];
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'; ++pos);
+	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t' || s[pos] == '('; ++pos);
+	for (; s[pos] != ' ' && s[pos] != ':' && s[pos] != 0 && s[pos]!= ')' && s[pos]!=','; ++pos) op += s[pos];
+	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'|| s[pos] == ')'; ++pos);
 	return op;
 }
 
@@ -242,6 +242,12 @@ string MipsSimulatorClass::String_Fetch(const string & s)
 	}
 
 	return fs;
+}
+
+inline bool MipsSimulatorClass::isReg(const string & s)
+{
+	for (auto x : s) if (x == '$') return true;
+	return false;
 }
 
 bool MipsSimulatorClass::Text_labelProcess(const string &s, int &expr_pos, state_num &state)
@@ -384,7 +390,7 @@ void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state)
 				char* byte = reinterpret_cast<char*> (&x);
 				memory[mem_pos++] = byte[0];
 				memory[mem_pos++] = byte[1];
-				clog << *(reinterpret_cast<short*> (byte))<< ' ';
+				clog << *(reinterpret_cast<short*> (byte)) << ' ';
 			}
 			clog << "into the memory and the mem_pos is changed to " << mem_pos << endl;
 		}
@@ -456,7 +462,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	int linenum = 0;
 
 	while (getline(codein, tmps)) {
-		clog << "---------------------------------------------------------------" << endl;
+		clog << "---------------------------------------------------------------------------------------------------" << endl;
 		// For clog
 		++linenum;
 
@@ -464,7 +470,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 			// Get the position of the text labels
 
 			clog << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
-			clog << "The origin line is \"" << tmps << "\"" <<endl;
+			clog << "The origin line is \"" << tmps << "\"" << endl;
 
 			bool re = Text_labelProcess(tmps, expr_pos, state);
 			if (re) continue;
@@ -475,7 +481,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 		}
 		else {
 			// state == data
-			clog << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data? "data":"text") << " mod"<< endl;
+			clog << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
 			clog << "The origin line is \"" << tmps << "\"" << endl;
 			Data_Process(tmps, mem_pos, state);
 
@@ -486,6 +492,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	for (auto x : preExpr) pE << x << endl;
 	pE.close();
 
+	clog << "---------------------------------------------------------------------------------------------------" << endl;
 	clog << "First scanning COMPLETE!" << endl;
 
 	clog << "===================================================================================================" << endl;
@@ -495,21 +502,81 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	// Second scanning of the preExpr
 	// Change the string into tokens
 	// Change the labels into address
-	
+
 	// For clog
 	int nowline = 0;
 
 	for (auto x : preExpr) {
 		// For clog
 		++nowline;
-
+		clog << "---------------------------------------------------------------------------------------------------" << endl;
 		clog << "Start a Token_Process of the Line " << nowline << " in preEpr" << endl;
+		clog << "The origin command is: " << x << endl;
 		int pos = 0;
 		Token token;
 		string op = Get_Next_String(x, pos);
-		
+		token.op = op_num_tab[op];
+		clog << "Find the op is: " << op << endl;
 
+		string r[3];
+		int rstate[3];
+		for (int i = 0; i < 3; ++i) {
+			r[i] = Get_Next_String(x, pos);
+			if (r[i] == "") rstate[i] = r_state::none;
+			else if (isReg(r[i])) rstate[i] = r_state::regi;
+			else rstate[i] = r_state::immi;
+		}
+
+		for (int i = 0; i < 3; ++i) {
+			if (rstate[i] == r_state::immi) {
+				token.rstate[i] = r_state::immi;
+				if (r[i][0] == '-' || (r[i][0] <= '9'  && r[i][0] >= '0')) {
+					int t = 0;
+					int n = Get_Next_Num<int>(r[i], t);
+					token.r[i] = n;
+					clog << "The r[" << i << "] is a immidiate number " << n << endl;
+				}
+				else {
+					// r[i] is a text_label
+					int n = txt_lab_tab[r[i]];
+					token.r[i] = n;
+					clog << "The r[" << i << "] is a label \"" << r[i] << "\" represent the Line " << n << endl;
+				}
+			}
+			else if (rstate[i] == r_state::none) {
+				token.r[i] = 0;
+				token.rstate[i] = r_state::none;
+				clog << "The r[" << i << "] is none" << endl;
+			}
+			else {
+				// rstate[i] == regi
+				int offset = 0;
+				string orireg = r[i];
+				if (r[i][0] != '$') {
+					int t = 0;
+					offset = Get_Next_Num<int>(r[i], t);
+					orireg = Get_Next_String(r[i], t);
+				}
+				string reg_name;
+				for (int t = 1; orireg[t] != 0; ++t) {
+					reg_name += orireg[t];
+				}
+				int n; 				
+				int tmp = 0;
+				if (reg_name[0] <= '9' && reg_name[0] >= '0') n = Get_Next_Num<int>(reg_name, tmp);
+				else n = reg_num_tab[reg_name];
+
+				token.r[i] = n;
+				token.rstate[i] = r_state::regi;
+				token.offset[i] = offset;
+				clog << "The r[" << i << "] is a register "<< reg_name <<" represent the reg_num " << n << " with offset "<< offset << endl;
+			}
+		}
 	}
+	clog << "---------------------------------------------------------------------------------------------------" << endl;
+	clog << "Second scanning COMPLETE" << endl;
+	clog << "===================================================================================================" << endl;
+
 	//remember to figure out which mul, mulu, div and divu the command is!!!!!!!!!!!!!!!!!!!!
 
 	preExpr.clear();

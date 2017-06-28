@@ -18,6 +18,7 @@ public:
 	struct Token {
 		int op;
 		int r[3];
+		int offset[3];
 		r_state rstate[3];
 	};
 
@@ -57,6 +58,7 @@ private:
 	T Get_Next_Num(const string &s, int &pos);
 	string Get_Next_String(const string &s, int &pos);
 	string String_Fetch(const string &s);
+	bool isReg(const string &s);
 	bool Text_labelProcess(const string &s, int &expr_pos, state_num &state);
 	void Data_Process(string s, int &mem_pos, state_num &state);
 
