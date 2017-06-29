@@ -1,12 +1,15 @@
 #ifndef PIPELINECLASS
 #define PIPELINECLASS
 #include "MipsSimulatorClass.h"
+#include "UsefulStructures.h"
+#include "CommandClass.h"
 
 extern MipsSimulatorClass MipsSimulator;
 
 class PipelineClass {
 private:
-	MipsSimulatorClass::Token token;
+	unsigned myPC;
+	UsefulStructures::Token token;
 	long long r[4];
 
 	void Instruction_Fetch();
@@ -17,8 +20,9 @@ private:
 public:
 	// Here should be some useful varient
 	int nowpip = 1;
+	PipelineClass(const unsigned & _PC);
 
-	void StartNext(MipsSimulatorClass::pip_run_state state);
+	void StartNext(UsefulStructures::pip_run_state state);
 
 };
 

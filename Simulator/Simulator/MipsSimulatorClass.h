@@ -7,6 +7,7 @@
 #include "CommandClass.h"
 #include <fstream>
 #include <set>
+#include "UsefulStructures.h"
 
 using std::string;
 using std::ostream;
@@ -14,29 +15,7 @@ using std::ostream;
 class MipsSimulatorClass;
 
 class MipsSimulatorClass {
-public:
-	enum r_state {
-		none, regi, immi
-	};
-	enum pip_run_state{
-		run, pause, clear
-	};
-	struct Token {
-		int op;
-		int r[3];
-		int offset;
-		r_state rstate[3];
-		Token& operator=(const Token& rt) {
-			op = rt.op;
-			for (int i = 0; i < 3; ++i) {
-				r[i] = rt.r[i];
-				rstate[i] = rt.rstate[i];
-			}
-			offset = rt.offset;
-		}
-		friend ostream& operator<<(ostream & out, const Token &token);
-	};
-
+	friend class CommandClass::Command_Base;
 private:
 	enum op_num {
 		add=1, addu, sub, subu, mul, mulu,mul2,mulu2, div,divu, div2, 
@@ -57,19 +36,22 @@ private:
 		t8 = 24, t9, k0, k1, gp, sp, s8 = 30,
 		fp = 30, ra,lo,hi
 	};
-
 	
-
+	
 public:
 	char memory[4 * 1024 * 1024];
 	unsigned reg[34] = { 0 };
 	unsigned &PC = reg[reg_num::sp];
-	std::vector<Token> expr;
+	std::vector<UsefulStructures::Token> expr;
 	std::unordered_map<string, op_num> op_num_tab;
 	CommandClass::Command_Base *op_class_tab[op_num::syscall];
 	std::unordered_map<string, int> reg_num_tab;
 	std::unordered_map<string, int> txt_lab_tab;
 	std::unordered_map<string, int> mem_lab_tab;
+	enum type_op_num {
+		sig, unsig
+	};
+	std::unordered_map<int, type_op_num> type_op;
 
 	std::ofstream log;
 
@@ -88,6 +70,6 @@ public:
 	MipsSimulatorClass();
 	~MipsSimulatorClass();
 
-	void exec(std::istream & codein, std::ostream & fout);
+	void exec(std::istream & codein);
 };
 #endif //MIPSSIMULATORCLASS

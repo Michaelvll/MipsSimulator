@@ -103,6 +103,63 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_num_tab["nop"] = op_num::nop;
 	op_num_tab["syscall"] = op_num::syscall;
 
+	// Initialize the type of operation table from op_num to type_op_num
+	type_op[op_num::add] = type_op_num::sig;
+	type_op[op_num::addu] = type_op_num::unsig;
+	type_op[op_num::sub] = type_op_num::sig;
+	type_op[op_num::subu] = type_op_num::unsig;
+	type_op[op_num::mul] = type_op_num::sig;
+	type_op[op_num::mulu] = type_op_num::unsig;
+	type_op[op_num::mul2] = type_op_num::sig;
+	type_op[op_num::mulu2] = type_op_num::sig;
+	type_op[op_num::div] = type_op_num::sig;
+	type_op[op_num::divu] = type_op_num::unsig;
+	type_op[op_num::div2] = type_op_num::sig;
+	type_op[op_num::divu2] = type_op_num::sig;
+	type_op[op_num::xor] = type_op_num::sig;
+	type_op[op_num::xoru] = type_op_num::unsig;
+	type_op[op_num::neg] = type_op_num::sig;
+	type_op[op_num::negu] = type_op_num::unsig;
+	type_op[op_num::rem] = type_op_num::sig;
+	type_op[op_num::remu] = type_op_num::unsig;
+	type_op[op_num::li] = type_op_num::sig;
+	type_op[op_num::seq] = type_op_num::sig;
+	type_op[op_num::sge] = type_op_num::sig;
+	type_op[op_num::sgt] = type_op_num::sig;
+	type_op[op_num::sle] = type_op_num::sig;
+	type_op[op_num::slt] = type_op_num::sig;
+	type_op[op_num::sne] = type_op_num::sig;
+	type_op[op_num::b] = type_op_num::sig;
+	type_op[op_num::beq] = type_op_num::sig;
+	type_op[op_num::bne] = type_op_num::sig;
+	type_op[op_num::bge] = type_op_num::sig;
+	type_op[op_num::ble] = type_op_num::sig;
+	type_op[op_num::bgt] = type_op_num::sig;
+	type_op[op_num::blt] = type_op_num::sig;
+	type_op[op_num::beqz] = type_op_num::sig;
+	type_op[op_num::bnez] = type_op_num::sig;
+	type_op[op_num::blez] = type_op_num::sig;
+	type_op[op_num::bgez] = type_op_num::sig;
+	type_op[op_num::bgtz] = type_op_num::sig;
+	type_op[op_num::bltz] = type_op_num::sig;
+	type_op[op_num::j] = type_op_num::sig;
+	type_op[op_num::jr] = type_op_num::sig;
+	type_op[op_num::jal] = type_op_num::sig;
+	type_op[op_num::jalr] = type_op_num::sig;
+	type_op[op_num::la] = type_op_num::sig;
+	type_op[op_num::lb] = type_op_num::sig;
+	type_op[op_num::lh] = type_op_num::sig;
+	type_op[op_num::lw] = type_op_num::sig;
+	type_op[op_num::sb] = type_op_num::sig;
+	type_op[op_num::sh] = type_op_num::sig;
+	type_op[op_num::sw] = type_op_num::sig;
+	type_op[op_num::move] = type_op_num::sig;
+	type_op[op_num::mfhi] = type_op_num::sig;
+	type_op[op_num::mflo] = type_op_num::sig;
+	type_op[op_num::nop] = type_op_num::sig;
+	type_op[op_num::syscall] = type_op_num::sig;
+
+
 
 	// Initialize the operation table from op_num to class
 	op_class_tab[0] = new CommandClass::Empty;
@@ -176,7 +233,7 @@ inline T MipsSimulatorClass::Get_Next_Num(const string &s, size_t &pos)
 	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t'); ++pos);
 	T n = 0;
 	bool neg = false;
-	if (s[pos] == '-') neg = true,++pos;
+	if (s[pos] == '-') neg = true, ++pos;
 	for (; pos < s.length() && (s[pos] <= '9' && s[pos] >= '0'); ++pos) {
 		n *= 10;
 		n += s[pos] - '0';
@@ -190,8 +247,8 @@ inline string MipsSimulatorClass::Get_Next_String(const string &s, size_t &pos)
 {
 	string op;
 	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t' || s[pos] == '('); ++pos);
-	for (; pos < s.length() && s[pos] != ' ' && s[pos] != ':' && s[pos]!= ')' && s[pos]!=','; ++pos) op += s[pos];
-	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'|| s[pos] == ')'); ++pos);
+	for (; pos < s.length() && s[pos] != ' ' && s[pos] != ':' && s[pos] != ')' && s[pos] != ','; ++pos) op += s[pos];
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t' || s[pos] == ')'); ++pos);
 	return op;
 }
 
@@ -200,7 +257,7 @@ string MipsSimulatorClass::String_Fetch(const string & s)
 	string fs;
 	size_t pos = 0;
 	for (; pos < s.length(); ++pos) {
-		if (s[pos] == '\"'||'\'')continue;
+		if (s[pos] == '\"' || '\'')continue;
 		else if (s[pos] == '\\') {
 			++pos;
 			switch (s[pos]) {
@@ -521,23 +578,32 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 		log << "Start a Token_Process of the Line " << nowline << " in preEpr" << endl;
 		log << "The origin command is: " << x << endl;
 		size_t pos = 0;
-		Token token;
+		UsefulStructures::Token token;
 		string op = Get_Next_String(x, pos);
+		if (op == "mul" || op == "mulu" || op == "div" || op == "divu") {
+			unsigned tmppos = pos;
+			string r1, r2, r3;
+			r1 = Get_Next_String(x, tmppos);
+			r2 = Get_Next_String(x, tmppos);
+			r3 = Get_Next_String(x, tmppos);
+			if (r3 == "") op += '2';
+		}
 		token.op = op_num_tab[op];
+		
 		log << "Find the op is: " << op << endl;
 
 		string r[3];
 		int rstate[3];
 		for (int i = 0; i < 3; ++i) {
 			r[i] = Get_Next_String(x, pos);
-			if (r[i] == "") rstate[i] = r_state::none;
-			else if (isReg(r[i])) rstate[i] = r_state::regi;
-			else rstate[i] = r_state::immi;
+			if (r[i] == "") rstate[i] = UsefulStructures::r_state::none;
+			else if (isReg(r[i])) rstate[i] = UsefulStructures::r_state::regi;
+			else rstate[i] = UsefulStructures::r_state::immi;
 		}
 
 		for (int i = 0; i < 3; ++i) {
-			if (rstate[i] == r_state::immi) {
-				token.rstate[i] = r_state::immi;
+			if (rstate[i] == UsefulStructures::r_state::immi) {
+				token.rstate[i] = UsefulStructures::r_state::immi;
 				if (r[i][0] == '-' || (r[i][0] <= '9'  && r[i][0] >= '0')) {
 					size_t t = 0;
 					int n = Get_Next_Num<int>(r[i], t);
@@ -558,9 +624,9 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 					token.r[i] = n;
 				}
 			}
-			else if (rstate[i] == r_state::none) {
+			else if (rstate[i] == UsefulStructures::r_state::none) {
 				token.r[i] = 0;
-				token.rstate[i] = r_state::none;
+				token.rstate[i] = UsefulStructures::r_state::none;
 				log << "The r[" << i << "] is none" << endl;
 			}
 			else {
@@ -576,14 +642,14 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 				for (int t = 1; orireg[t] != 0; ++t) {
 					reg_name += orireg[t];
 				}
-				int n; 				
+				int n;
 				size_t t = 0;
 				if (reg_name[0] <= '9' && reg_name[0] >= '0') n = Get_Next_Num<int>(reg_name, t);
 				else n = reg_num_tab[reg_name];
 
 				token.r[i] = n;
-				token.rstate[i] = r_state::regi;
-				
+				token.rstate[i] = UsefulStructures::r_state::regi;
+
 				log << "The r[" << i << "] is a register " << reg_name << " represent the reg_num " << n;
 				if (offset != 0) {
 					token.offset = offset;
@@ -608,32 +674,35 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 void MipsSimulatorClass::pipeline()
 {
 	log.open("C:/AResource/PPCA/mips/Data/Exec.log");
+	log << "===================================================================================================" << endl;
+	log << "===================================================================================================" << endl;
+	log << "Pipline START" << endl;
+	log << "===================================================================================================" << endl;
+
+	long long cycle = 0;
 	deque<PipelineClass> line;
 	while (PC < expr.size()) {
-		MipsSimulatorClass::pip_run_state run_state = run;
+		UsefulStructures::pip_run_state run_state = UsefulStructures::pip_run_state::run;
+		++cycle;
+		log << "---------------------------------------------------------------------------------------------------" << endl;
+		log << "Cycle " << cycle << " START" << endl;
+
 		for (auto x : line) {
 			x.StartNext(run_state);
 		}
-		if (line.size() == 0 || line.back().nowpip > 1) line.push_back(PipelineClass());
+		if (line.size() == 0 || line.back().nowpip > 1) line.push_back(PipelineClass(PC));
 	}
 	log.close();
 }
 
 
-void MipsSimulatorClass::exec(std::istream & codein, std::ostream & fout)
+void MipsSimulatorClass::exec(std::istream & codein)
 {
 	// Read code from the source and prepare the commands into vector<Token> Expr
 	readcode(codein);
-	
+
 	// Start 5 pipeline
 	pipeline();
 
 }
 
-ostream & operator<<(ostream & out, const MipsSimulatorClass::Token & token)
-{
-	out << "\nToken{[op] " << token.op << ", [r]{ " << token.r[0] << ", " << token.r[1]
-		<< ", " << token.r[2] << " }, [rstate]{ " << token.rstate[0] << ", " << token.rstate[1] << ", "
-		<< token.rstate[2] << " }, [offset]" << token.offset << " }";
-	return out;
-}

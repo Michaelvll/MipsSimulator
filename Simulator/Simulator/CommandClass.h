@@ -1,20 +1,20 @@
 #ifndef COMMANDCLASS
 #define COMMANDCLASS
+#include "UsefulStructures.h"
 
 class CommandClass {
 public:
-	//typedef long long LL;
 	class Command_Base {
 	protected:
 		virtual bool exec(long long r[4]) = 0;
-		
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
 	};
 	/// Classes of command
 	class Empty:public Command_Base{
 	public:
 		bool exec(long long r[4]);
 	};
-	class Add : public Command_Base {
+	class Add : public Command_Base{
 	public:
 		bool exec(long long r[4]);
 	};
@@ -47,11 +47,14 @@ public:
 	class Mul2 : public Command_Base {
 	public:
 		bool exec(long long r[4]);
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
+
 	};
 
 	class Mulu2 : public Command_Base {
 	public:
 		bool exec(long long r[4]);
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
 	};
 
 	class Div : public Command_Base {
@@ -67,11 +70,13 @@ public:
 	class Div2 : public Command_Base {
 	public:
 		bool exec(long long r[4]);
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
 	};
 
 	class Divu2 : public Command_Base {
 	public:
 		bool exec(long long r[4]);
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
 	};
 
 	class Xor : public Command_Base {
@@ -142,6 +147,7 @@ public:
 	class B : public Command_Base {
 	public:
 		bool exec(long long r[4]);
+		virtual void data_preparation(const UsefulStructures::Token &token, long long res[4]);
 	};
 
 	class Beq : public Command_Base {
