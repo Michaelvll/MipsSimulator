@@ -11,6 +11,7 @@ int main() {
         "mflo,nop,syscall";
 
     int pos = 0;
+    int cnt = 0;
     for (; pos < s.length(); ++pos) {
         for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ','); ++pos)
             ;
@@ -19,11 +20,10 @@ int main() {
         for (; s[pos] != ',' && s[pos] != ' ' && pos < s.length(); ++pos) {
             tmp += s[pos];
         }
+        cout << "type_op[op_num::" << tmp << "] = ";
         tmp[0] = toupper(tmp[0]);
-        cout << "void CommandClass::" + tmp +
-                    "::exec(long long r[3], int "
-                    "rstate[3])\n{\n}\n "
-             << endl;
+        cout << "type_op_num::sig;" << endl;
+        ++cnt;
     }
     return 0;
 }

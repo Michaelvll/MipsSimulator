@@ -20,12 +20,11 @@ int main() {
             tmp += s[pos];
         }
         tmp[0] = toupper(tmp[0]);
-        cout
-            << "class " + tmp + " : public Command_Base {\n"
-            << "public:\n"
-            << "\tvoid exec(int r[3], MipsSimulatorClass::r_state rstate[3]);\n"
-            << "};\n"
-            << endl;
+        cout << "class " + tmp + " : public Command_Base {\n"
+             << "public:\n"
+             << "\tvoid exec(long long r[3], int rstate[3]);\n"
+             << "};\n"
+             << endl;
         ;
     }
     return 0;

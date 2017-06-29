@@ -11,7 +11,9 @@ int main() {
         "mflo,nop,syscall";
 
     int pos = 0;
+    int cnt = 0;
     for (; pos < s.length(); ++pos) {
+        ++cnt;
         for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ','); ++pos)
             ;
         if (s[pos] == 0) break;
@@ -19,11 +21,7 @@ int main() {
         for (; s[pos] != ',' && s[pos] != ' ' && pos < s.length(); ++pos) {
             tmp += s[pos];
         }
-        tmp[0] = toupper(tmp[0]);
-        cout << "void CommandClass::" + tmp +
-                    "::exec(long long r[3], int "
-                    "rstate[3])\n{\n}\n "
-             << endl;
+        cout << cnt << "\t" << tmp << endl;
     }
     return 0;
 }

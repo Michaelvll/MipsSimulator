@@ -24,12 +24,24 @@
     <ClCompile Include="CommandClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UsefulStructures.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MipsSimulatorClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CommandClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UsefulStructures.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

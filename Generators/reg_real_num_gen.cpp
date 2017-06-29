@@ -8,9 +8,12 @@ int main() {
                   "s2",   "s3", "s4", "s5", "s6", "s7", "t8", "t9", "k0",
                   "k1",   "gp", "sp", "s8", "ra", "lo", "lh"};
 
-    for (int i = 0; i < 32; ++i) {
-        string ans = "reg_num_tab[\"" + s[i] + "\"] = reg_num::" + s[i] + ";";
-        cout << ans << endl;
+    int cnt = -1;
+    for (int i = 0; i < 34; ++i) {
+        ++cnt;
+        // string ans = "reg_num_tab[\"" + s[i] + "\"] = reg_num::" + s[i] +
+        // ";";
+        cout << cnt << '\t' << s[i] << endl;
     }
 
     return 0;

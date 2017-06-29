@@ -143,10 +143,14 @@
     <ClCompile Include="CommandClass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MipsSimulatorClass.cpp" />
+    <ClCompile Include="PipelineClass.cpp" />
+    <ClCompile Include="UsefulStructures.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MipsSimulatorClass.h" />
     <ClInclude Include="CommandClass.h" />
+    <ClInclude Include="PipelineClass.h" />
+    <ClInclude Include="UsefulStructures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

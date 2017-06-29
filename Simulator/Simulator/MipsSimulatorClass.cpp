@@ -1,10 +1,11 @@
 #include "MipsSimulatorClass.h"
+#include "PipelineClass.h"
 #include <vector>
-#include <fstream>
+#include <deque>
 using std::log;
 using std::endl;
 using std::vector;
-
+using std::deque;
 
 MipsSimulatorClass::MipsSimulatorClass()
 {
@@ -43,6 +44,8 @@ MipsSimulatorClass::MipsSimulatorClass()
 	reg_num_tab["s8"] = reg_num::s8;
 	reg_num_tab["fp"] = reg_num::fp;
 	reg_num_tab["ra"] = reg_num::ra;
+	reg_num_tab["lo"] = reg_num::lo;
+	reg_num_tab["hi"] = reg_num::hi;
 
 	//Initialize the operation table from string to op_num
 	op_num_tab["add"] = op_num::add;
@@ -100,8 +103,66 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_num_tab["nop"] = op_num::nop;
 	op_num_tab["syscall"] = op_num::syscall;
 
+	// Initialize the type of operation table from op_num to type_op_num
+	type_op[op_num::add] = type_op_num::sig;
+	type_op[op_num::addu] = type_op_num::unsig;
+	type_op[op_num::sub] = type_op_num::sig;
+	type_op[op_num::subu] = type_op_num::unsig;
+	type_op[op_num::mul] = type_op_num::sig;
+	type_op[op_num::mulu] = type_op_num::unsig;
+	type_op[op_num::mul2] = type_op_num::sig;
+	type_op[op_num::mulu2] = type_op_num::sig;
+	type_op[op_num::div] = type_op_num::sig;
+	type_op[op_num::divu] = type_op_num::unsig;
+	type_op[op_num::div2] = type_op_num::sig;
+	type_op[op_num::divu2] = type_op_num::sig;
+	type_op[op_num::xor] = type_op_num::sig;
+	type_op[op_num::xoru] = type_op_num::unsig;
+	type_op[op_num::neg] = type_op_num::sig;
+	type_op[op_num::negu] = type_op_num::unsig;
+	type_op[op_num::rem] = type_op_num::sig;
+	type_op[op_num::remu] = type_op_num::unsig;
+	type_op[op_num::li] = type_op_num::sig;
+	type_op[op_num::seq] = type_op_num::sig;
+	type_op[op_num::sge] = type_op_num::sig;
+	type_op[op_num::sgt] = type_op_num::sig;
+	type_op[op_num::sle] = type_op_num::sig;
+	type_op[op_num::slt] = type_op_num::sig;
+	type_op[op_num::sne] = type_op_num::sig;
+	type_op[op_num::b] = type_op_num::sig;
+	type_op[op_num::beq] = type_op_num::sig;
+	type_op[op_num::bne] = type_op_num::sig;
+	type_op[op_num::bge] = type_op_num::sig;
+	type_op[op_num::ble] = type_op_num::sig;
+	type_op[op_num::bgt] = type_op_num::sig;
+	type_op[op_num::blt] = type_op_num::sig;
+	type_op[op_num::beqz] = type_op_num::sig;
+	type_op[op_num::bnez] = type_op_num::sig;
+	type_op[op_num::blez] = type_op_num::sig;
+	type_op[op_num::bgez] = type_op_num::sig;
+	type_op[op_num::bgtz] = type_op_num::sig;
+	type_op[op_num::bltz] = type_op_num::sig;
+	type_op[op_num::j] = type_op_num::sig;
+	type_op[op_num::jr] = type_op_num::sig;
+	type_op[op_num::jal] = type_op_num::sig;
+	type_op[op_num::jalr] = type_op_num::sig;
+	type_op[op_num::la] = type_op_num::sig;
+	type_op[op_num::lb] = type_op_num::sig;
+	type_op[op_num::lh] = type_op_num::sig;
+	type_op[op_num::lw] = type_op_num::sig;
+	type_op[op_num::sb] = type_op_num::sig;
+	type_op[op_num::sh] = type_op_num::sig;
+	type_op[op_num::sw] = type_op_num::sig;
+	type_op[op_num::move] = type_op_num::sig;
+	type_op[op_num::mfhi] = type_op_num::sig;
+	type_op[op_num::mflo] = type_op_num::sig;
+	type_op[op_num::nop] = type_op_num::sig;
+	type_op[op_num::syscall] = type_op_num::sig;
+
+
 
 	// Initialize the operation table from op_num to class
+	op_class_tab[0] = new CommandClass::Empty;
 	op_class_tab[op_num::add] = new CommandClass::Add;
 	op_class_tab[op_num::addu] = new CommandClass::Addu;
 	op_class_tab[op_num::sub] = new CommandClass::Sub;
@@ -155,7 +216,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_class_tab[op_num::mfhi] = new CommandClass::Mfhi;
 	op_class_tab[op_num::mflo] = new CommandClass::Mflo;
 	op_class_tab[op_num::nop] = new CommandClass::Nop;
-	op_class_tab[op_num::syscall] = new CommandClass::Syscall;
+	//op_class_tab[op_num::syscall] = new CommandClass::Syscall;
 
 
 }
@@ -165,37 +226,38 @@ MipsSimulatorClass::~MipsSimulatorClass()
 		delete x;
 	}
 }
+
 template<typename T>
-inline T MipsSimulatorClass::Get_Next_Num(const string &s, int &pos)
+inline T MipsSimulatorClass::Get_Next_Num(const string &s, size_t &pos)
 {
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t'; ++pos);
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t'); ++pos);
 	T n = 0;
 	bool neg = false;
-	if (s[pos] == '-') neg = true,++pos;
-	for (; s[pos] <= '9' && s[pos] >= '0'; ++pos) {
+	if (s[pos] == '-') neg = true, ++pos;
+	for (; pos < s.length() && (s[pos] <= '9' && s[pos] >= '0'); ++pos) {
 		n *= 10;
 		n += s[pos] - '0';
 	}
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'; ++pos);
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'); ++pos);
 
 	return neg ? -n : n;
 }
 
-inline string MipsSimulatorClass::Get_Next_String(const string &s, int &pos)
+inline string MipsSimulatorClass::Get_Next_String(const string &s, size_t &pos)
 {
 	string op;
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t' || s[pos] == '('; ++pos);
-	for (; s[pos] != ' ' && s[pos] != ':' && s[pos] != 0 && s[pos]!= ')' && s[pos]!=','; ++pos) op += s[pos];
-	for (; s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t'|| s[pos] == ')'; ++pos);
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t' || s[pos] == '('); ++pos);
+	for (; pos < s.length() && s[pos] != ' ' && s[pos] != ':' && s[pos] != ')' && s[pos] != ','; ++pos) op += s[pos];
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == '\t' || s[pos] == ')'); ++pos);
 	return op;
 }
 
 string MipsSimulatorClass::String_Fetch(const string & s)
 {
 	string fs;
-	int pos = 0;
-	for (; s[pos] != 0; ++pos) {
-		if (s[pos] == '\"'||'\'')continue;
+	size_t pos = 0;
+	for (; pos < s.length(); ++pos) {
+		if (s[pos] == '\"' || '\'')continue;
 		else if (s[pos] == '\\') {
 			++pos;
 			switch (s[pos]) {
@@ -250,20 +312,20 @@ inline bool MipsSimulatorClass::isReg(const string & s)
 	return false;
 }
 
-bool MipsSimulatorClass::Text_labelProcess(const string &s, int &expr_pos, state_num &state, std::ofstream & log)
+bool MipsSimulatorClass::Text_labelProcess(const string &s, int &expr_pos, state_num &state)
 {
 	/// Process the command in text area
 
-	int pos = 0;
+	size_t pos = 0;
 	string op = Get_Next_String(s, pos);
 
-	if (s[pos] == ':') {
+	if (pos < s.length() && s[pos] == ':') {
 		txt_lab_tab[op] = expr_pos;
 
 		log << "Get a text_label: \"" << op << "\" of the expr_pos  " << expr_pos << endl;
 
 		++pos;
-		for (; s[pos] != 0; ++pos) {
+		for (; pos < s.length(); ++pos) {
 			string op = Get_Next_String(s, pos);
 			txt_lab_tab[op] = expr_pos; // Record the position of the label in text with unordered_map
 
@@ -292,18 +354,18 @@ bool MipsSimulatorClass::Text_labelProcess(const string &s, int &expr_pos, state
 	return false;
 }
 
-void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state, std::ofstream &log)
+void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state)
 {
-	int pos = 0;
+	size_t pos = 0;
 	string op = Get_Next_String(s, pos);
 
-	if (s[pos] == ':') {
+	if (pos < s.length() && s[pos] == ':') {
 		mem_lab_tab[op] = mem_pos;
 
 		log << "Get a mem_label: \"" << op << "\" of the mem_pos " << mem_pos << endl;
 
 		++pos;
-		for (; s[pos] != 0; ++pos) {
+		for (; pos < s.length(); ++pos) {
 			string op = Get_Next_String(s, pos);
 			mem_lab_tab[op] = mem_pos;// Record the position of the mem label with unordered_map
 
@@ -350,14 +412,15 @@ void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state,
 			log << "Get a command \".asciiz " << str << "\"" << endl;
 			log << "Previous mem_pos: " << mem_pos << endl;
 
-			for (unsigned int i = 0; i <= str.length(); ++i) {
+			for (unsigned int i = 0; i < str.length(); ++i) {
 				memory[mem_pos++] = str[i];
 			}
+			memory[mem_pos++] = '\0';
 			log << "Put the string (with end signal) " << str << " into the memory at: " << mem_pos << endl;
 		}
 		else if (op == ".byte") {
 			vector<char> vstr;
-			while (s[pos] != 0) {
+			while (pos < s.length()) {
 				string str = Get_Next_String(s, pos);
 				str = String_Fetch(str);
 				if (str != "") str.push_back(str[0]);
@@ -377,7 +440,7 @@ void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state,
 		}
 		else if (op == ".half") {
 			vector<short> vn;
-			while (s[pos] != 0) {
+			while (pos < s.length()) {
 				short n = Get_Next_Num<short>(s, pos);
 				vn.push_back(n);
 			}
@@ -397,7 +460,7 @@ void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state,
 		}
 		else if (op == ".word") {
 			vector<int> vn;
-			while (s[pos] != 0) {
+			while (pos < s.length()) {
 				int n = Get_Next_Num<int>(s, pos);
 				vn.push_back(n);
 			}
@@ -439,11 +502,10 @@ void MipsSimulatorClass::Data_Process(string s, int &mem_pos, state_num & state,
 }
 
 
-
 void MipsSimulatorClass::readcode(std::istream & codein)
 {
 	/// Process the Mips code from the stream codein, which comes from a whole file
-	std::ofstream log("C:/AResource/PPCA/mips/Data/Readcode.log");
+	log.open("C:/AResource/PPCA/mips/Data/Readcode.log");
 
 	vector<string> preExpr;
 	log << "===================================================================================================" << endl;
@@ -474,7 +536,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 			log << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
 			log << "The origin line is \"" << tmps << "\"" << endl;
 
-			bool re = Text_labelProcess(tmps, expr_pos, state, log);
+			bool re = Text_labelProcess(tmps, expr_pos, state);
 			if (re) continue;
 			++expr_pos;
 			preExpr.push_back(tmps);
@@ -486,7 +548,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 
 			log << "Start a Code_Process of the Line " << linenum << " in " << (state == state_num::data ? "data" : "text") << " mod" << endl;
 			log << "The origin line is \"" << tmps << "\"" << endl;
-			Data_Process(tmps, mem_pos, state, log);
+			Data_Process(tmps, mem_pos, state);
 
 		}
 	}
@@ -515,26 +577,35 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 		log << "---------------------------------------------------------------------------------------------------" << endl;
 		log << "Start a Token_Process of the Line " << nowline << " in preEpr" << endl;
 		log << "The origin command is: " << x << endl;
-		int pos = 0;
-		Token token;
+		size_t pos = 0;
+		UsefulStructures::Token token;
 		string op = Get_Next_String(x, pos);
+		if (op == "mul" || op == "mulu" || op == "div" || op == "divu") {
+			unsigned tmppos = pos;
+			string r1, r2, r3;
+			r1 = Get_Next_String(x, tmppos);
+			r2 = Get_Next_String(x, tmppos);
+			r3 = Get_Next_String(x, tmppos);
+			if (r3 == "") op += '2';
+		}
 		token.op = op_num_tab[op];
+		
 		log << "Find the op is: " << op << endl;
 
 		string r[3];
 		int rstate[3];
 		for (int i = 0; i < 3; ++i) {
 			r[i] = Get_Next_String(x, pos);
-			if (r[i] == "") rstate[i] = r_state::none;
-			else if (isReg(r[i])) rstate[i] = r_state::regi;
-			else rstate[i] = r_state::immi;
+			if (r[i] == "") rstate[i] = UsefulStructures::r_state::none;
+			else if (isReg(r[i])) rstate[i] = UsefulStructures::r_state::regi;
+			else rstate[i] = UsefulStructures::r_state::immi;
 		}
 
 		for (int i = 0; i < 3; ++i) {
-			if (rstate[i] == r_state::immi) {
-				token.rstate[i] = r_state::immi;
+			if (rstate[i] == UsefulStructures::r_state::immi) {
+				token.rstate[i] = UsefulStructures::r_state::immi;
 				if (r[i][0] == '-' || (r[i][0] <= '9'  && r[i][0] >= '0')) {
-					int t = 0;
+					size_t t = 0;
 					int n = Get_Next_Num<int>(r[i], t);
 					token.r[i] = n;
 					log << "The r[" << i << "] is a immidiate number " << n << endl;
@@ -553,9 +624,9 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 					token.r[i] = n;
 				}
 			}
-			else if (rstate[i] == r_state::none) {
+			else if (rstate[i] == UsefulStructures::r_state::none) {
 				token.r[i] = 0;
-				token.rstate[i] = r_state::none;
+				token.rstate[i] = UsefulStructures::r_state::none;
 				log << "The r[" << i << "] is none" << endl;
 			}
 			else {
@@ -563,7 +634,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 				int offset = 0;
 				string orireg = r[i];
 				if (r[i][0] != '$') {
-					int t = 0;
+					size_t t = 0;
 					offset = Get_Next_Num<int>(r[i], t);
 					orireg = Get_Next_String(r[i], t);
 				}
@@ -571,14 +642,14 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 				for (int t = 1; orireg[t] != 0; ++t) {
 					reg_name += orireg[t];
 				}
-				int n; 				
-				int tmp = 0;
-				if (reg_name[0] <= '9' && reg_name[0] >= '0') n = Get_Next_Num<int>(reg_name, tmp);
+				int n;
+				size_t t = 0;
+				if (reg_name[0] <= '9' && reg_name[0] >= '0') n = Get_Next_Num<int>(reg_name, t);
 				else n = reg_num_tab[reg_name];
 
 				token.r[i] = n;
-				token.rstate[i] = r_state::regi;
-				
+				token.rstate[i] = UsefulStructures::r_state::regi;
+
 				log << "The r[" << i << "] is a register " << reg_name << " represent the reg_num " << n;
 				if (offset != 0) {
 					token.offset = offset;
@@ -600,36 +671,38 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	preExpr.clear();
 }
 
-void MipsSimulatorClass::Instruction_Fetch()
+void MipsSimulatorClass::pipeline()
 {
+	log.open("C:/AResource/PPCA/mips/Data/Exec.log");
+	log << "===================================================================================================" << endl;
+	log << "===================================================================================================" << endl;
+	log << "Pipline START" << endl;
+	log << "===================================================================================================" << endl;
+
+	long long cycle = 0;
+	deque<PipelineClass> line;
+	while (PC < expr.size()) {
+		UsefulStructures::pip_run_state run_state = UsefulStructures::pip_run_state::run;
+		++cycle;
+		log << "---------------------------------------------------------------------------------------------------" << endl;
+		log << "Cycle " << cycle << " START" << endl;
+
+		for (auto x : line) {
+			x.StartNext(run_state);
+		}
+		if (line.size() == 0 || line.back().nowpip > 1) line.push_back(PipelineClass(PC));
+	}
+	log.close();
 }
 
-void MipsSimulatorClass::Instruction_Decode_Data_Preparation()
-{
-}
 
-void MipsSimulatorClass::Execution()
+void MipsSimulatorClass::exec(std::istream & codein)
 {
-}
-
-void MipsSimulatorClass::Memory_Access()
-{
-}
-
-void MipsSimulatorClass::Write_Back()
-{
-}
-
-void MipsSimulatorClass::exec(std::istream & codein, std::ostream & fout)
-{
+	// Read code from the source and prepare the commands into vector<Token> Expr
 	readcode(codein);
 
-	//debug
-	//for (auto x : expr) {
-	//	std::log << x << std::endl;
-	//}
-
+	// Start 5 pipeline
+	pipeline();
 
 }
-
 
