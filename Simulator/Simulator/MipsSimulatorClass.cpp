@@ -9,6 +9,10 @@ using std::deque;
 
 MipsSimulatorClass::MipsSimulatorClass()
 {
+	memory = new char[4 * 1024 * 1024];
+	for (int i = 0; i < 4 * 1024 * 1024; ++i) {
+		memory[i] = 0;
+	}
 	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024 - 1;
 
 	// Initialize the unordered_map of register .no
@@ -169,6 +173,7 @@ MipsSimulatorClass::~MipsSimulatorClass()
 	for (auto x : op_class_tab) {
 		delete x;
 	}
+	delete memory;
 }
 
 template<typename T>
@@ -602,6 +607,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 				log << endl;
 			}
 		}
+		expr.push_back(token);
 	}
 	log << "---------------------------------------------------------------------------------------------------" << endl;
 	log << "Second scanning COMPLETE" << endl;
@@ -627,10 +633,10 @@ void MipsSimulatorClass::pipeline()
 	deque<PipelineClass> line;
 	int wait = 0;
 	int busyreg[4] = { -1, -1, -1, -1 };
-	//int run_state = UsefulStructures::pip_run_state::run;
+	int run_state = UsefulStructures::pip_run_state::run;
 	while (PC < expr.size() || (PC == expr.size() && !line.empty())) {
 		++cycle;
-		int run_state;
+
 		if (run_state != UsefulStructures::pip_run_state::clear)
 			run_state = UsefulStructures::pip_run_state::run;
 		if (line.empty())

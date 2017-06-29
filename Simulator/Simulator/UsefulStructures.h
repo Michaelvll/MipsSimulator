@@ -26,10 +26,10 @@ public:
 		run, pause, clear, stopALL
 	};
 	struct Token {
-		int op;
-		int r[3];
-		int offset;
-		r_state rstate[3];
+		int op = 0;
+		int r[3] = { 0 };
+		int offset= 0;
+		r_state rstate[3] = { r_state::none,r_state::none,r_state::none };
 		Token& operator=(const Token& rt);
 		friend ostream& operator<<(ostream & out, const Token &token);
 	};
@@ -39,9 +39,9 @@ public:
 		r_state rstate[3];
 		arguToken & operator=(const Token& rt);
 	};
-	inline bool Busy(const int &nowreg, int busyreg[4]);
-	inline void addBusy(const int &nowreg, int busyreg[4]);
-	inline void delBusy(const int &nowreg, int busyreg[4]);
+	bool Busy(const int &nowreg, int busyreg[4]);
+	void addBusy(const int &nowreg, int busyreg[4]);
+	void delBusy(const int &nowreg, int busyreg[4]);
 
 };
 

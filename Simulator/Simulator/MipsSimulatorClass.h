@@ -27,7 +27,7 @@ private:
 	
 	
 public:
-	char memory[4 * 1024 * 1024] = { 0 };
+	char* memory;
 	unsigned reg[35] = { 0 };
 	unsigned &PC = reg[UsefulStructures::reg_num::pc];
 	std::vector<UsefulStructures::Token> expr;

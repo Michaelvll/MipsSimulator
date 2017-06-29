@@ -1,5 +1,7 @@
 #include "UsefulStructures.h"
 
+UsefulStructures usefulstructures;
+
 ostream & operator<<(ostream & out, const UsefulStructures::Token & token)
 {
 	out << "\nToken{[op] " << token.op << ", [r]{ " << token.r[0] << ", " << token.r[1]
@@ -29,7 +31,7 @@ UsefulStructures::arguToken & UsefulStructures::arguToken::operator=(const Token
 	return *this;
 }
 
-inline bool UsefulStructures::Busy(const int &nowreg, int busyreg[4])
+bool UsefulStructures::Busy(const int &nowreg, int busyreg[4])
 {
 	for (int i = 0; i < 4; ++i) {
 		if (nowreg == busyreg[i]) return true;
@@ -37,7 +39,7 @@ inline bool UsefulStructures::Busy(const int &nowreg, int busyreg[4])
 	return false;
 }
 
-inline void UsefulStructures::addBusy(const int &nowreg, int busyreg[4])
+void UsefulStructures::addBusy(const int &nowreg, int busyreg[4])
 {
 	if (Busy(nowreg, busyreg)) return;
 	// For debug
@@ -54,7 +56,7 @@ inline void UsefulStructures::addBusy(const int &nowreg, int busyreg[4])
 	if (!flag) std::cerr << "Failed to put in the busy reg!!!!!!!!!!" << std::endl;
 }
 
-inline void UsefulStructures::delBusy(const int & nowreg, int busyreg[4])
+void UsefulStructures::delBusy(const int & nowreg, int busyreg[4])
 {
 	for (int i = 0; i < 4; ++i) {
 		if (nowreg == busyreg[i]) busyreg[i] = -1;

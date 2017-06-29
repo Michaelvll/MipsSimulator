@@ -7,6 +7,8 @@ using std::endl;
 using std::cin;
 
 extern MipsSimulatorClass MipsSimulator;
+extern UsefulStructures usefulstructures;
+
 /// If return false && r[4] == 1 || 5, then stop the instruction before
 /// If return false && r[4] == -1, then stop the program
 /// if return false && r[4] == -2, then stop the program and return r[2]
@@ -35,7 +37,7 @@ bool CommandClass::Add::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Add" << endl;
 
 	r[1] = static_cast<int>(r[1]) + static_cast<int>(r[2]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -47,7 +49,7 @@ bool CommandClass::Addu::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Addu" << endl;
 
 	r[1] = r[1] + r[2];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -58,7 +60,7 @@ bool CommandClass::Sub::exec(long long r[5], int busy_reg[2])
 	/// Output r[1] which can be used as static_cast<int> (r[1])
 	MipsSimulator.log << "Execute Sub" << endl;
 
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[1] = static_cast<int>(r[1]) - static_cast<int>(r[2]);
 	r[4] = 0;
 	return true;
@@ -71,7 +73,7 @@ bool CommandClass::Subu::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Subu" << endl;
 
 	r[1] = r[1] - r[2];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -84,7 +86,7 @@ bool CommandClass::Mul::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]) * static_cast<int>(r[2]);
 	r[1] = static_cast<long long> (a);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -96,7 +98,7 @@ bool CommandClass::Mulu::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Mulu" << endl;
 
 	r[1] = static_cast<unsigned>(r[1]) * static_cast<unsigned>(r[2]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -110,8 +112,8 @@ bool CommandClass::Mul2::exec(long long r[5], int busy_reg[2])
 	r[2] = r[1] * r[4];
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	UsefulStructures().addBusy(r[0], busy_reg);
-	UsefulStructures().addBusy(r[1], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
 	return true;
 }
@@ -127,8 +129,8 @@ bool CommandClass::Mulu2::exec(long long r[5], int busy_reg[2])
 	r[2] = static_cast<long long>(c);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	UsefulStructures().addBusy(r[0], busy_reg);
-	UsefulStructures().addBusy(r[1], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
 	return true;
 }
@@ -140,7 +142,7 @@ bool CommandClass::Div::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Div" << endl;
 
 	r[1] = static_cast<int>(r[1]) / static_cast<int>(r[2]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -152,7 +154,7 @@ bool CommandClass::Divu::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Divu" << endl;
 
 	r[1] = static_cast<unsigned>(r[1]) / static_cast<unsigned>(r[2]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -169,8 +171,8 @@ bool CommandClass::Div2::exec(long long r[5], int busy_reg[2])
 	r[2] |= (static_cast<unsigned long long>(a % b) << 32);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	UsefulStructures().addBusy(r[0], busy_reg);
-	UsefulStructures().addBusy(r[1], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
 	return true;
 }
@@ -187,8 +189,8 @@ bool CommandClass::Divu2::exec(long long r[5], int busy_reg[2])
 	r[2] |= (static_cast<unsigned long long>(a % b) << 32);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	UsefulStructures().addBusy(r[0], busy_reg);
-	UsefulStructures().addBusy(r[1], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
 	return true;
 }
@@ -200,7 +202,7 @@ bool CommandClass::Xor::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Xor" << endl;
 
 	r[1] = r[1] ^ r[2];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -212,7 +214,7 @@ bool CommandClass::Xoru::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Xoru" << endl;
 
 	r[1] = r[1] ^ r[2];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -224,7 +226,7 @@ bool CommandClass::Neg::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Neg" << endl;
 
 	r[1] = -r[1];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -238,7 +240,7 @@ bool CommandClass::Negu::exec(long long r[5], int busy_reg[2])
 	unsigned a = static_cast<unsigned> (r[1]);
 	unsigned b = -a;
 	r[1] = static_cast<long long> (b);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -251,7 +253,7 @@ bool CommandClass::Rem::exec(long long r[5], int busy_reg[2])
 
 	int c = static_cast<int>(r[1]) % static_cast<int>(r[2]);
 	r[1] = static_cast<long long>(c);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -263,7 +265,7 @@ bool CommandClass::Remu::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Remu" << endl;
 
 	r[1] = r[1] % r[2];
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -272,7 +274,7 @@ bool CommandClass::Li::exec(long long r[5], int busy_reg[2])
 {
 	MipsSimulator.log << "Execute Li" << endl;
 
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -285,7 +287,7 @@ bool CommandClass::Seq::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a == b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -298,7 +300,7 @@ bool CommandClass::Sge::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a >= b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -311,7 +313,7 @@ bool CommandClass::Sgt::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a > b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -324,7 +326,7 @@ bool CommandClass::Sle::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a <= b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -337,7 +339,7 @@ bool CommandClass::Slt::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a < b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -350,7 +352,7 @@ bool CommandClass::Sne::exec(long long r[5], int busy_reg[2])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a != b) ? 1 : 0;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -364,7 +366,7 @@ bool CommandClass::B::exec(long long r[5], int busy_reg[2])
 	r[1] = r[0];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -377,7 +379,7 @@ bool CommandClass::Beq::exec(long long r[5], int busy_reg[2])
 	r[4] = (r[0] == r[1]) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -390,7 +392,7 @@ bool CommandClass::Bne::exec(long long r[5], int busy_reg[2])
 	r[4] = (r[0] != r[1]) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -404,7 +406,7 @@ bool CommandClass::Bge::exec(long long r[5], int busy_reg[2])
 	r[4] = (a >= b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -418,7 +420,7 @@ bool CommandClass::Ble::exec(long long r[5], int busy_reg[2])
 	r[4] = (a <= b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -432,7 +434,7 @@ bool CommandClass::Bgt::exec(long long r[5], int busy_reg[2])
 	r[4] = (a > b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -446,7 +448,7 @@ bool CommandClass::Blt::exec(long long r[5], int busy_reg[2])
 	r[4] = (a < b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -459,7 +461,7 @@ bool CommandClass::Beqz::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a == 0) ? 1 : 0; r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -472,7 +474,7 @@ bool CommandClass::Bnez::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a != 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -485,7 +487,7 @@ bool CommandClass::Blez::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a <= 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -498,7 +500,7 @@ bool CommandClass::Bgez::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a >= 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -511,7 +513,7 @@ bool CommandClass::Bgtz::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a > 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -524,7 +526,7 @@ bool CommandClass::Bltz::exec(long long r[5], int busy_reg[2])
 	int a = static_cast<int>(r[0]);
 	r[4] = (a < 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -537,7 +539,7 @@ bool CommandClass::J::exec(long long r[5], int busy_reg[2])
 	r[1] = r[0];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -550,7 +552,7 @@ bool CommandClass::Jr::exec(long long r[5], int busy_reg[2])
 	r[1] = r[0];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -563,7 +565,7 @@ bool CommandClass::Jal::exec(long long r[5], int busy_reg[2])
 	r[1] = r[0];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -576,7 +578,7 @@ bool CommandClass::Jalr::exec(long long r[5], int busy_reg[2])
 	r[1] = r[0];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -590,7 +592,7 @@ bool CommandClass::La::exec(long long r[5], int busy_reg[2])
 	r[1] += r[3];
 	r[2] = 0;
 	r[4] = -3;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -604,7 +606,7 @@ bool CommandClass::Lb::exec(long long r[5], int busy_reg[2])
 	r[1] += r[3];
 	r[2] = 1;
 	r[4] = -3;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -618,7 +620,7 @@ bool CommandClass::Lh::exec(long long r[5], int busy_reg[2])
 	r[1] += r[3];
 	r[2] = 2;
 	r[4] = -3;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -632,7 +634,7 @@ bool CommandClass::Lw::exec(long long r[5], int busy_reg[2])
 	r[1] += r[3];
 	r[2] = 4;
 	r[4] = -3;
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -679,7 +681,7 @@ bool CommandClass::Move::exec(long long r[5], int busy_reg[2])
 {
 	MipsSimulator.log << "Execute Move" << endl;
 
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -688,7 +690,7 @@ bool CommandClass::Mfhi::exec(long long r[5], int busy_reg[2])
 {
 	MipsSimulator.log << "Execute Mfhi" << endl;
 	r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::hi]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -698,7 +700,7 @@ bool CommandClass::Mflo::exec(long long r[5], int busy_reg[2])
 	MipsSimulator.log << "Execute Mflo" << endl;
 
 	r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::lo]);
-	UsefulStructures().addBusy(r[0], busy_reg);
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 0;
 	return true;
 }
@@ -728,14 +730,14 @@ bool CommandClass::Syscall::exec(long long r[5], int busy_reg[2])
 		break;
 	case 5:
 		r[4] = -6;
-		UsefulStructures().addBusy(UsefulStructures::reg_num::v0, busy_reg);
+		usefulstructures.addBusy(UsefulStructures::reg_num::v0, busy_reg);
 		break;
 	case 8:
 		r[4] = -3;
 		break;
 	case 9:
 		r[4] = -10;
-		UsefulStructures().addBusy(UsefulStructures::reg_num::v0, busy_reg);
+		usefulstructures.addBusy(UsefulStructures::reg_num::v0, busy_reg);
 		break;
 	case 10:
 		r[4] = -1;
@@ -787,7 +789,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::arguTo
 		res[3] = static_cast<long long> (argutoken.offset);
 		for (int i = 1; i < 3; ++i) {
 			if (argutoken.rstate[i] == UsefulStructures::r_state::regi) {
-				if (UsefulStructures().Busy(argutoken.r[i], busyreg)) {
+				if (usefulstructures.Busy(argutoken.r[i], busyreg)) {
 					state = UsefulStructures::pip_run_state::pause;
 					return;
 				}
@@ -832,8 +834,8 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 	}
 	else if (r[4] == -11) {
 		cin >> s;
-		if (r[3] - 1 < s.length()) {
-			s.substr(0, r[3] - 1);
+		if (static_cast<unsigned>(r[3] - 1) < s.length()) {
+			s.substr(0, static_cast<unsigned>(r[3] - 1));
 		}
 	}
 }
@@ -841,7 +843,7 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], string & s)
 {
 	if (r[4] >= 0 || r[4] == -6) {
-		MipsSimulator.reg[r[0]] = r[1];
+		MipsSimulator.reg[r[0]] = static_cast<unsigned>(r[1]);
 	}
 	else if (r[4] == -2) {
 		cout << r[2] << endl;
@@ -854,7 +856,8 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 		for (int i = 0; i < r[2]; ++i) {
 			MipsSimulator.reg[r[0]+i] = tmp[i];
 		}
-		if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = r[0] + r[2];
+		if (r[0] + r[2] > MipsSimulator.mem_pos)
+			MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
 	}
 	else if (r[4] == -7) {
 		cout << r[2] << endl;
@@ -865,14 +868,14 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 		r[1] = tmp[1];
 	}
 	else if (r[4] == -10) {
-		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos;
-		MipsSimulator.mem_pos += r[2];
+		MipsSimulator.reg[static_cast<unsigned>(r[0])] = MipsSimulator.mem_pos;
+		MipsSimulator.mem_pos += static_cast<int>(r[2]);
 	}
 	else if (r[4] == -11) {
-		for (int i = 0; i < s.length(); ++i) {
-			MipsSimulator.memory[r[2] + i] = s[i];
+		for (unsigned i = 0; i < s.length(); ++i) {
+			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
 		}
 		if (r[2] + s.length() > MipsSimulator.mem_pos) 
-			MipsSimulator.mem_pos = r[2] + s.length();
+			MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
 	}
 }
