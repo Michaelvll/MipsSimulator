@@ -9,214 +9,162 @@ using std::deque;
 
 MipsSimulatorClass::MipsSimulatorClass()
 {
+	memory = new char[4 * 1024 * 1024];
+	for (int i = 0; i < 4 * 1024 * 1024; ++i) {
+		memory[i] = 0;
+	}
+	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024 - 1;
 
 	// Initialize the unordered_map of register .no
-	reg_num_tab["zero"] = reg_num::zero;
-	reg_num_tab["at"] = reg_num::at;
-	reg_num_tab["v0"] = reg_num::v0;
-	reg_num_tab["v1"] = reg_num::v1;
-	reg_num_tab["a0"] = reg_num::a0;
-	reg_num_tab["a1"] = reg_num::a1;
-	reg_num_tab["a2"] = reg_num::a2;
-	reg_num_tab["a3"] = reg_num::a3;
-	reg_num_tab["t0"] = reg_num::t0;
-	reg_num_tab["t1"] = reg_num::t1;
-	reg_num_tab["t2"] = reg_num::t2;
-	reg_num_tab["t3"] = reg_num::t3;
-	reg_num_tab["t4"] = reg_num::t4;
-	reg_num_tab["t5"] = reg_num::t5;
-	reg_num_tab["t6"] = reg_num::t6;
-	reg_num_tab["t7"] = reg_num::t7;
-	reg_num_tab["s0"] = reg_num::s0;
-	reg_num_tab["s1"] = reg_num::s1;
-	reg_num_tab["s2"] = reg_num::s2;
-	reg_num_tab["s3"] = reg_num::s3;
-	reg_num_tab["s4"] = reg_num::s4;
-	reg_num_tab["s5"] = reg_num::s5;
-	reg_num_tab["s6"] = reg_num::s6;
-	reg_num_tab["s7"] = reg_num::s7;
-	reg_num_tab["t8"] = reg_num::t8;
-	reg_num_tab["t9"] = reg_num::t9;
-	reg_num_tab["k0"] = reg_num::k0;
-	reg_num_tab["k1"] = reg_num::k1;
-	reg_num_tab["gp"] = reg_num::gp;
-	reg_num_tab["sp"] = reg_num::sp;
-	reg_num_tab["s8"] = reg_num::s8;
-	reg_num_tab["fp"] = reg_num::fp;
-	reg_num_tab["ra"] = reg_num::ra;
-	reg_num_tab["lo"] = reg_num::lo;
-	reg_num_tab["hi"] = reg_num::hi;
+	reg_num_tab["zero"] = UsefulStructures::reg_num::zero;
+	reg_num_tab["at"] = UsefulStructures::reg_num::at;
+	reg_num_tab["v0"] = UsefulStructures::reg_num::v0;
+	reg_num_tab["v1"] = UsefulStructures::reg_num::v1;
+	reg_num_tab["a0"] = UsefulStructures::reg_num::a0;
+	reg_num_tab["a1"] = UsefulStructures::reg_num::a1;
+	reg_num_tab["a2"] = UsefulStructures::reg_num::a2;
+	reg_num_tab["a3"] = UsefulStructures::reg_num::a3;
+	reg_num_tab["t0"] = UsefulStructures::reg_num::t0;
+	reg_num_tab["t1"] = UsefulStructures::reg_num::t1;
+	reg_num_tab["t2"] = UsefulStructures::reg_num::t2;
+	reg_num_tab["t3"] = UsefulStructures::reg_num::t3;
+	reg_num_tab["t4"] = UsefulStructures::reg_num::t4;
+	reg_num_tab["t5"] = UsefulStructures::reg_num::t5;
+	reg_num_tab["t6"] = UsefulStructures::reg_num::t6;
+	reg_num_tab["t7"] = UsefulStructures::reg_num::t7;
+	reg_num_tab["s0"] = UsefulStructures::reg_num::s0;
+	reg_num_tab["s1"] = UsefulStructures::reg_num::s1;
+	reg_num_tab["s2"] = UsefulStructures::reg_num::s2;
+	reg_num_tab["s3"] = UsefulStructures::reg_num::s3;
+	reg_num_tab["s4"] = UsefulStructures::reg_num::s4;
+	reg_num_tab["s5"] = UsefulStructures::reg_num::s5;
+	reg_num_tab["s6"] = UsefulStructures::reg_num::s6;
+	reg_num_tab["s7"] = UsefulStructures::reg_num::s7;
+	reg_num_tab["t8"] = UsefulStructures::reg_num::t8;
+	reg_num_tab["t9"] = UsefulStructures::reg_num::t9;
+	reg_num_tab["k0"] = UsefulStructures::reg_num::k0;
+	reg_num_tab["k1"] = UsefulStructures::reg_num::k1;
+	reg_num_tab["gp"] = UsefulStructures::reg_num::gp;
+	reg_num_tab["sp"] = UsefulStructures::reg_num::sp;
+	reg_num_tab["s8"] = UsefulStructures::reg_num::s8;
+	reg_num_tab["fp"] = UsefulStructures::reg_num::fp;
+	reg_num_tab["ra"] = UsefulStructures::reg_num::ra;
+	reg_num_tab["lo"] = UsefulStructures::reg_num::lo;
+	reg_num_tab["hi"] = UsefulStructures::reg_num::hi;
+	reg_num_tab["pc"] = UsefulStructures::reg_num::pc;
 
 	//Initialize the operation table from string to op_num
-	op_num_tab["add"] = op_num::add;
-	op_num_tab["addu"] = op_num::addu;
-	op_num_tab["sub"] = op_num::sub;
-	op_num_tab["subu"] = op_num::subu;
-	op_num_tab["mul"] = op_num::mul;
-	op_num_tab["mulu"] = op_num::mulu;
-	op_num_tab["mul2"] = op_num::mul2;
-	op_num_tab["mulu2"] = op_num::mulu2;
-	op_num_tab["div"] = op_num::div;
-	op_num_tab["divu"] = op_num::divu;
-	op_num_tab["div2"] = op_num::div2;
-	op_num_tab["divu2"] = op_num::divu2;
-	op_num_tab["xor"] = op_num::xor;
-	op_num_tab["xoru"] = op_num::xoru;
-	op_num_tab["neg"] = op_num::neg;
-	op_num_tab["negu"] = op_num::negu;
-	op_num_tab["rem"] = op_num::rem;
-	op_num_tab["remu"] = op_num::remu;
-	op_num_tab["li"] = op_num::li;
-	op_num_tab["seq"] = op_num::seq;
-	op_num_tab["sge"] = op_num::sge;
-	op_num_tab["sgt"] = op_num::sgt;
-	op_num_tab["sle"] = op_num::sle;
-	op_num_tab["slt"] = op_num::slt;
-	op_num_tab["sne"] = op_num::sne;
-	op_num_tab["b"] = op_num::b;
-	op_num_tab["beq"] = op_num::beq;
-	op_num_tab["bne"] = op_num::bne;
-	op_num_tab["bge"] = op_num::bge;
-	op_num_tab["ble"] = op_num::ble;
-	op_num_tab["bgt"] = op_num::bgt;
-	op_num_tab["blt"] = op_num::blt;
-	op_num_tab["beqz"] = op_num::beqz;
-	op_num_tab["bnez"] = op_num::bnez;
-	op_num_tab["blez"] = op_num::blez;
-	op_num_tab["bgez"] = op_num::bgez;
-	op_num_tab["bgtz"] = op_num::bgtz;
-	op_num_tab["bltz"] = op_num::bltz;
-	op_num_tab["j"] = op_num::j;
-	op_num_tab["jr"] = op_num::jr;
-	op_num_tab["jal"] = op_num::jal;
-	op_num_tab["jalr"] = op_num::jalr;
-	op_num_tab["la"] = op_num::la;
-	op_num_tab["lb"] = op_num::lb;
-	op_num_tab["lh"] = op_num::lh;
-	op_num_tab["lw"] = op_num::lw;
-	op_num_tab["sb"] = op_num::sb;
-	op_num_tab["sh"] = op_num::sh;
-	op_num_tab["sw"] = op_num::sw;
-	op_num_tab["move"] = op_num::move;
-	op_num_tab["mfhi"] = op_num::mfhi;
-	op_num_tab["mflo"] = op_num::mflo;
-	op_num_tab["nop"] = op_num::nop;
-	op_num_tab["syscall"] = op_num::syscall;
-
-	// Initialize the type of operation table from op_num to type_op_num
-	type_op[op_num::add] = type_op_num::sig;
-	type_op[op_num::addu] = type_op_num::unsig;
-	type_op[op_num::sub] = type_op_num::sig;
-	type_op[op_num::subu] = type_op_num::unsig;
-	type_op[op_num::mul] = type_op_num::sig;
-	type_op[op_num::mulu] = type_op_num::unsig;
-	type_op[op_num::mul2] = type_op_num::sig;
-	type_op[op_num::mulu2] = type_op_num::sig;
-	type_op[op_num::div] = type_op_num::sig;
-	type_op[op_num::divu] = type_op_num::unsig;
-	type_op[op_num::div2] = type_op_num::sig;
-	type_op[op_num::divu2] = type_op_num::sig;
-	type_op[op_num::xor] = type_op_num::sig;
-	type_op[op_num::xoru] = type_op_num::unsig;
-	type_op[op_num::neg] = type_op_num::sig;
-	type_op[op_num::negu] = type_op_num::unsig;
-	type_op[op_num::rem] = type_op_num::sig;
-	type_op[op_num::remu] = type_op_num::unsig;
-	type_op[op_num::li] = type_op_num::sig;
-	type_op[op_num::seq] = type_op_num::sig;
-	type_op[op_num::sge] = type_op_num::sig;
-	type_op[op_num::sgt] = type_op_num::sig;
-	type_op[op_num::sle] = type_op_num::sig;
-	type_op[op_num::slt] = type_op_num::sig;
-	type_op[op_num::sne] = type_op_num::sig;
-	type_op[op_num::b] = type_op_num::sig;
-	type_op[op_num::beq] = type_op_num::sig;
-	type_op[op_num::bne] = type_op_num::sig;
-	type_op[op_num::bge] = type_op_num::sig;
-	type_op[op_num::ble] = type_op_num::sig;
-	type_op[op_num::bgt] = type_op_num::sig;
-	type_op[op_num::blt] = type_op_num::sig;
-	type_op[op_num::beqz] = type_op_num::sig;
-	type_op[op_num::bnez] = type_op_num::sig;
-	type_op[op_num::blez] = type_op_num::sig;
-	type_op[op_num::bgez] = type_op_num::sig;
-	type_op[op_num::bgtz] = type_op_num::sig;
-	type_op[op_num::bltz] = type_op_num::sig;
-	type_op[op_num::j] = type_op_num::sig;
-	type_op[op_num::jr] = type_op_num::sig;
-	type_op[op_num::jal] = type_op_num::sig;
-	type_op[op_num::jalr] = type_op_num::sig;
-	type_op[op_num::la] = type_op_num::sig;
-	type_op[op_num::lb] = type_op_num::sig;
-	type_op[op_num::lh] = type_op_num::sig;
-	type_op[op_num::lw] = type_op_num::sig;
-	type_op[op_num::sb] = type_op_num::sig;
-	type_op[op_num::sh] = type_op_num::sig;
-	type_op[op_num::sw] = type_op_num::sig;
-	type_op[op_num::move] = type_op_num::sig;
-	type_op[op_num::mfhi] = type_op_num::sig;
-	type_op[op_num::mflo] = type_op_num::sig;
-	type_op[op_num::nop] = type_op_num::sig;
-	type_op[op_num::syscall] = type_op_num::sig;
-
-
+	op_num_tab["add"] = UsefulStructures::op_num::add;
+	op_num_tab["addu"] = UsefulStructures::op_num::addu;
+	op_num_tab["sub"] = UsefulStructures::op_num::sub;
+	op_num_tab["subu"] = UsefulStructures::op_num::subu;
+	op_num_tab["mul"] = UsefulStructures::op_num::mul;
+	op_num_tab["mulu"] = UsefulStructures::op_num::mulu;
+	op_num_tab["mul2"] = UsefulStructures::op_num::mul2;
+	op_num_tab["mulu2"] = UsefulStructures::op_num::mulu2;
+	op_num_tab["div"] = UsefulStructures::op_num::div;
+	op_num_tab["divu"] = UsefulStructures::op_num::divu;
+	op_num_tab["div2"] = UsefulStructures::op_num::div2;
+	op_num_tab["divu2"] = UsefulStructures::op_num::divu2;
+	op_num_tab["xor"] = UsefulStructures::op_num::xor;
+	op_num_tab["xoru"] = UsefulStructures::op_num::xoru;
+	op_num_tab["neg"] = UsefulStructures::op_num::neg;
+	op_num_tab["negu"] = UsefulStructures::op_num::negu;
+	op_num_tab["rem"] = UsefulStructures::op_num::rem;
+	op_num_tab["remu"] = UsefulStructures::op_num::remu;
+	op_num_tab["li"] = UsefulStructures::op_num::li;
+	op_num_tab["seq"] = UsefulStructures::op_num::seq;
+	op_num_tab["sge"] = UsefulStructures::op_num::sge;
+	op_num_tab["sgt"] = UsefulStructures::op_num::sgt;
+	op_num_tab["sle"] = UsefulStructures::op_num::sle;
+	op_num_tab["slt"] = UsefulStructures::op_num::slt;
+	op_num_tab["sne"] = UsefulStructures::op_num::sne;
+	op_num_tab["b"] = UsefulStructures::op_num::b;
+	op_num_tab["beq"] = UsefulStructures::op_num::beq;
+	op_num_tab["bne"] = UsefulStructures::op_num::bne;
+	op_num_tab["bge"] = UsefulStructures::op_num::bge;
+	op_num_tab["ble"] = UsefulStructures::op_num::ble;
+	op_num_tab["bgt"] = UsefulStructures::op_num::bgt;
+	op_num_tab["blt"] = UsefulStructures::op_num::blt;
+	op_num_tab["beqz"] = UsefulStructures::op_num::beqz;
+	op_num_tab["bnez"] = UsefulStructures::op_num::bnez;
+	op_num_tab["blez"] = UsefulStructures::op_num::blez;
+	op_num_tab["bgez"] = UsefulStructures::op_num::bgez;
+	op_num_tab["bgtz"] = UsefulStructures::op_num::bgtz;
+	op_num_tab["bltz"] = UsefulStructures::op_num::bltz;
+	op_num_tab["j"] = UsefulStructures::op_num::j;
+	op_num_tab["jr"] = UsefulStructures::op_num::jr;
+	op_num_tab["jal"] = UsefulStructures::op_num::jal;
+	op_num_tab["jalr"] = UsefulStructures::op_num::jalr;
+	op_num_tab["la"] = UsefulStructures::op_num::la;
+	op_num_tab["lb"] = UsefulStructures::op_num::lb;
+	op_num_tab["lh"] = UsefulStructures::op_num::lh;
+	op_num_tab["lw"] = UsefulStructures::op_num::lw;
+	op_num_tab["sb"] = UsefulStructures::op_num::sb;
+	op_num_tab["sh"] = UsefulStructures::op_num::sh;
+	op_num_tab["sw"] = UsefulStructures::op_num::sw;
+	op_num_tab["move"] = UsefulStructures::op_num::move;
+	op_num_tab["mfhi"] = UsefulStructures::op_num::mfhi;
+	op_num_tab["mflo"] = UsefulStructures::op_num::mflo;
+	op_num_tab["nop"] = UsefulStructures::op_num::nop;
+	op_num_tab["syscall"] = UsefulStructures::op_num::syscall;
 
 	// Initialize the operation table from op_num to class
-	op_class_tab[0] = new CommandClass::Empty;
-	op_class_tab[op_num::add] = new CommandClass::Add;
-	op_class_tab[op_num::addu] = new CommandClass::Addu;
-	op_class_tab[op_num::sub] = new CommandClass::Sub;
-	op_class_tab[op_num::subu] = new CommandClass::Subu;
-	op_class_tab[op_num::mul] = new CommandClass::Mul;
-	op_class_tab[op_num::mulu] = new CommandClass::Mulu;
-	op_class_tab[op_num::mul2] = new CommandClass::Mul2;
-	op_class_tab[op_num::mulu2] = new CommandClass::Mulu2;
-	op_class_tab[op_num::div] = new CommandClass::Div;
-	op_class_tab[op_num::divu] = new CommandClass::Divu;
-	op_class_tab[op_num::div2] = new CommandClass::Div2;
-	op_class_tab[op_num::divu2] = new CommandClass::Divu2;
-	op_class_tab[op_num::xor] = new CommandClass::Xor;
-	op_class_tab[op_num::xoru] = new CommandClass::Xoru;
-	op_class_tab[op_num::neg] = new CommandClass::Neg;
-	op_class_tab[op_num::negu] = new CommandClass::Negu;
-	op_class_tab[op_num::rem] = new CommandClass::Rem;
-	op_class_tab[op_num::remu] = new CommandClass::Remu;
-	op_class_tab[op_num::li] = new CommandClass::Li;
-	op_class_tab[op_num::seq] = new CommandClass::Seq;
-	op_class_tab[op_num::sge] = new CommandClass::Sge;
-	op_class_tab[op_num::sgt] = new CommandClass::Sgt;
-	op_class_tab[op_num::sle] = new CommandClass::Sle;
-	op_class_tab[op_num::slt] = new CommandClass::Slt;
-	op_class_tab[op_num::sne] = new CommandClass::Sne;
-	op_class_tab[op_num::b] = new CommandClass::B;
-	op_class_tab[op_num::beq] = new CommandClass::Beq;
-	op_class_tab[op_num::bne] = new CommandClass::Bne;
-	op_class_tab[op_num::bge] = new CommandClass::Bge;
-	op_class_tab[op_num::ble] = new CommandClass::Ble;
-	op_class_tab[op_num::bgt] = new CommandClass::Bgt;
-	op_class_tab[op_num::blt] = new CommandClass::Blt;
-	op_class_tab[op_num::beqz] = new CommandClass::Beqz;
-	op_class_tab[op_num::bnez] = new CommandClass::Bnez;
-	op_class_tab[op_num::blez] = new CommandClass::Blez;
-	op_class_tab[op_num::bgez] = new CommandClass::Bgez;
-	op_class_tab[op_num::bgtz] = new CommandClass::Bgtz;
-	op_class_tab[op_num::bltz] = new CommandClass::Bltz;
-	op_class_tab[op_num::j] = new CommandClass::J;
-	op_class_tab[op_num::jr] = new CommandClass::Jr;
-	op_class_tab[op_num::jal] = new CommandClass::Jal;
-	op_class_tab[op_num::jalr] = new CommandClass::Jalr;
-	op_class_tab[op_num::la] = new CommandClass::La;
-	op_class_tab[op_num::lb] = new CommandClass::Lb;
-	op_class_tab[op_num::lh] = new CommandClass::Lh;
-	op_class_tab[op_num::lw] = new CommandClass::Lw;
-	op_class_tab[op_num::sb] = new CommandClass::Sb;
-	op_class_tab[op_num::sh] = new CommandClass::Sh;
-	op_class_tab[op_num::sw] = new CommandClass::Sw;
-	op_class_tab[op_num::move] = new CommandClass::Move;
-	op_class_tab[op_num::mfhi] = new CommandClass::Mfhi;
-	op_class_tab[op_num::mflo] = new CommandClass::Mflo;
-	op_class_tab[op_num::nop] = new CommandClass::Nop;
-	//op_class_tab[op_num::syscall] = new CommandClass::Syscall;
+	op_class_tab[UsefulStructures::op_num::empty] = new CommandClass::Empty;
+	op_class_tab[UsefulStructures::op_num::add] = new CommandClass::Add;
+	op_class_tab[UsefulStructures::op_num::addu] = new CommandClass::Addu;
+	op_class_tab[UsefulStructures::op_num::sub] = new CommandClass::Sub;
+	op_class_tab[UsefulStructures::op_num::subu] = new CommandClass::Subu;
+	op_class_tab[UsefulStructures::op_num::mul] = new CommandClass::Mul;
+	op_class_tab[UsefulStructures::op_num::mulu] = new CommandClass::Mulu;
+	op_class_tab[UsefulStructures::op_num::mul2] = new CommandClass::Mul2;
+	op_class_tab[UsefulStructures::op_num::mulu2] = new CommandClass::Mulu2;
+	op_class_tab[UsefulStructures::op_num::div] = new CommandClass::Div;
+	op_class_tab[UsefulStructures::op_num::divu] = new CommandClass::Divu;
+	op_class_tab[UsefulStructures::op_num::div2] = new CommandClass::Div2;
+	op_class_tab[UsefulStructures::op_num::divu2] = new CommandClass::Divu2;
+	op_class_tab[UsefulStructures::op_num::xor] = new CommandClass::Xor;
+	op_class_tab[UsefulStructures::op_num::xoru] = new CommandClass::Xoru;
+	op_class_tab[UsefulStructures::op_num::neg] = new CommandClass::Neg;
+	op_class_tab[UsefulStructures::op_num::negu] = new CommandClass::Negu;
+	op_class_tab[UsefulStructures::op_num::rem] = new CommandClass::Rem;
+	op_class_tab[UsefulStructures::op_num::remu] = new CommandClass::Remu;
+	op_class_tab[UsefulStructures::op_num::li] = new CommandClass::Li;
+	op_class_tab[UsefulStructures::op_num::seq] = new CommandClass::Seq;
+	op_class_tab[UsefulStructures::op_num::sge] = new CommandClass::Sge;
+	op_class_tab[UsefulStructures::op_num::sgt] = new CommandClass::Sgt;
+	op_class_tab[UsefulStructures::op_num::sle] = new CommandClass::Sle;
+	op_class_tab[UsefulStructures::op_num::slt] = new CommandClass::Slt;
+	op_class_tab[UsefulStructures::op_num::sne] = new CommandClass::Sne;
+	op_class_tab[UsefulStructures::op_num::b] = new CommandClass::B;
+	op_class_tab[UsefulStructures::op_num::beq] = new CommandClass::Beq;
+	op_class_tab[UsefulStructures::op_num::bne] = new CommandClass::Bne;
+	op_class_tab[UsefulStructures::op_num::bge] = new CommandClass::Bge;
+	op_class_tab[UsefulStructures::op_num::ble] = new CommandClass::Ble;
+	op_class_tab[UsefulStructures::op_num::bgt] = new CommandClass::Bgt;
+	op_class_tab[UsefulStructures::op_num::blt] = new CommandClass::Blt;
+	op_class_tab[UsefulStructures::op_num::beqz] = new CommandClass::Beqz;
+	op_class_tab[UsefulStructures::op_num::bnez] = new CommandClass::Bnez;
+	op_class_tab[UsefulStructures::op_num::blez] = new CommandClass::Blez;
+	op_class_tab[UsefulStructures::op_num::bgez] = new CommandClass::Bgez;
+	op_class_tab[UsefulStructures::op_num::bgtz] = new CommandClass::Bgtz;
+	op_class_tab[UsefulStructures::op_num::bltz] = new CommandClass::Bltz;
+	op_class_tab[UsefulStructures::op_num::j] = new CommandClass::J;
+	op_class_tab[UsefulStructures::op_num::jr] = new CommandClass::Jr;
+	op_class_tab[UsefulStructures::op_num::jal] = new CommandClass::Jal;
+	op_class_tab[UsefulStructures::op_num::jalr] = new CommandClass::Jalr;
+	op_class_tab[UsefulStructures::op_num::la] = new CommandClass::La;
+	op_class_tab[UsefulStructures::op_num::lb] = new CommandClass::Lb;
+	op_class_tab[UsefulStructures::op_num::lh] = new CommandClass::Lh;
+	op_class_tab[UsefulStructures::op_num::lw] = new CommandClass::Lw;
+	op_class_tab[UsefulStructures::op_num::sb] = new CommandClass::Sb;
+	op_class_tab[UsefulStructures::op_num::sh] = new CommandClass::Sh;
+	op_class_tab[UsefulStructures::op_num::sw] = new CommandClass::Sw;
+	op_class_tab[UsefulStructures::op_num::move] = new CommandClass::Move;
+	op_class_tab[UsefulStructures::op_num::mfhi] = new CommandClass::Mfhi;
+	op_class_tab[UsefulStructures::op_num::mflo] = new CommandClass::Mflo;
+	op_class_tab[UsefulStructures::op_num::nop] = new CommandClass::Nop;
+	//op_class_tab[UsefulStructures::op_num::syscall] = new CommandClass::Syscall;
 
 
 }
@@ -225,6 +173,7 @@ MipsSimulatorClass::~MipsSimulatorClass()
 	for (auto x : op_class_tab) {
 		delete x;
 	}
+	delete memory;
 }
 
 template<typename T>
@@ -519,7 +468,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 	// Execute all the command in .data and record the mem_label into a unordered map
 	// Put the commands in .text into a vector<string> preExpr and record the text_label into a unordered map
 	string tmps;
-	int expr_pos = 0, mem_pos = 0;
+	//int expr_pos = 0, mem_pos = 0;
 	state_num state = state_num::data;
 
 	// For log
@@ -589,7 +538,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 			if (r3 == "") op += '2';
 		}
 		token.op = op_num_tab[op];
-		
+
 		log << "Find the op is: " << op << endl;
 
 		string r[3];
@@ -658,6 +607,7 @@ void MipsSimulatorClass::readcode(std::istream & codein)
 				log << endl;
 			}
 		}
+		expr.push_back(token);
 	}
 	log << "---------------------------------------------------------------------------------------------------" << endl;
 	log << "Second scanning COMPLETE" << endl;
@@ -681,17 +631,46 @@ void MipsSimulatorClass::pipeline()
 
 	long long cycle = 0;
 	deque<PipelineClass> line;
-	while (PC < expr.size()) {
-		UsefulStructures::pip_run_state run_state = UsefulStructures::pip_run_state::run;
+	int wait = 0;
+	int busyreg[4] = { -1, -1, -1, -1 };
+	int run_state = UsefulStructures::pip_run_state::run;
+	while (PC < expr.size() || (PC == expr.size() && !line.empty())) {
 		++cycle;
-		log << "---------------------------------------------------------------------------------------------------" << endl;
-		log << "Cycle " << cycle << " START" << endl;
 
-		for (auto x : line) {
-			x.StartNext(run_state);
+		if (run_state != UsefulStructures::pip_run_state::clear)
+			run_state = UsefulStructures::pip_run_state::run;
+		if (line.empty())
+			run_state = UsefulStructures::pip_run_state::run;
+		if (line.empty() || (run_state == UsefulStructures::pip_run_state::run &&line.back().nowpip > 1))
+			line.push_back(PipelineClass(PC));
+		if (wait > 0) {
+			--wait;
+			run_state = UsefulStructures::pip_run_state::pause;
+			log << "---------------------------------------------------------------------------------------------------" << endl;
+			log << "Cycle " << cycle << " WAIT" << endl;
 		}
-		if (line.size() == 0 || line.back().nowpip > 1) line.push_back(PipelineClass(PC));
+		else {
+			log << "---------------------------------------------------------------------------------------------------" << endl;
+			log << "Cycle " << cycle << " START" << endl;
+		}
+		for (auto x : line) {
+			log << "At the instruction on Expr_pos: " << x.myPC << endl;
+			x.StartNext(run_state, wait, busyreg);
+		}
+		if (run_state == UsefulStructures::pip_run_state::stopALL) break;
+
+		if (run_state == UsefulStructures::pip_run_state::clear) {
+			while (line.size() != 1) line.pop_front();
+		}
+
+		while (line.size() != 0 && line.back().nowpip > 5) line.pop_back();
 	}
+
+	log << "===================================================================================================" << endl;
+	log << "Pipline COMPLETE" << endl;
+	log << "===================================================================================================" << endl;
+	log << "===================================================================================================" << endl;
+
 	log.close();
 }
 
