@@ -38,6 +38,7 @@ public:
 		int offset;
 		r_state rstate[3];
 		arguToken & operator=(const Token& rt);
+		friend ostream& operator<<(ostream & out, const arguToken &token);
 	};
 	bool Busy(const int &nowreg, int busyreg[4]);
 	void addBusy(const int &nowreg, int busyreg[4]);

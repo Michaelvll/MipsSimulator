@@ -16,7 +16,7 @@ private:
 	long long r[5];
 	string s;
 
-	int mywait = 0;
+	//int mywait = 0;
 
 	void Instruction_Fetch();
 	void Data_Preparation(int &state,int busyreg[4]);

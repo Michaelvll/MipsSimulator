@@ -10,6 +10,14 @@ ostream & operator<<(ostream & out, const UsefulStructures::Token & token)
 	return out;
 }
 
+ostream & operator<<(ostream & out, const UsefulStructures::arguToken & token)
+{
+	out << "arguToken{ [r]{ " << token.r[0] << ", " << token.r[1]
+		<< ", " << token.r[2] << " }, [rstate]{ " << token.rstate[0] << ", " << token.rstate[1] << ", "
+		<< token.rstate[2] << " }, [offset]" << token.offset << " }";
+	return out;
+}
+
 UsefulStructures::Token & UsefulStructures::Token::operator=(const Token & rt)
 {
 	op = rt.op;

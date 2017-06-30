@@ -27,3 +27,7 @@ Scan the source code twice:
 * r[4] == -9 need to write back string from s to I/O device
 * r[4] == -10 need to allocate mem with length of r[2] and put the address to reg[r[0]]
 * r[4] == -11 need to read a string from I/O device to memory[r[0]]   Syscall 8
+
+## Pipeline
+front	5	4	3	2	1	back
+<---<---<---<---<---------------

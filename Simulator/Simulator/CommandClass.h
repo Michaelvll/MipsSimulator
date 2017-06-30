@@ -283,7 +283,7 @@ public:
 		bool exec(long long r[5], int busy_reg[2]);
 	};
 
-	class Syscall {
+	class Syscall:public Command_Base {
 	public:
 		bool exec(long long r[5], int busy_reg[2]);
 	};
