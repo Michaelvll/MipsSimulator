@@ -3,7 +3,6 @@
 #include <vector>
 #include <deque>
 using std::clog;
-
 using std::endl;
 using std::vector;
 using std::deque;

@@ -5,13 +5,13 @@ using std::cout;
 using std::clog;
 
 extern MipsSimulatorClass MipsSimulator;
+extern UsefulStructures usefulstructures;
 
 void PipelineClass::Instruction_Fetch()
 {
 	clog << "---\nInstruction Fetch for the instrcution at PC: " << myPC << endl;
 	if (MipsSimulator.PC >= MipsSimulator.expr.size()) return;
 	token = MipsSimulator.expr[MipsSimulator.PC++];
-	argutoken = token;
 	op = token.op;
 	//MipsSimulator.log << "Fetch a instruction at PC: " << MipsSimulator.PC - 1 << token << endl;
 	clog << "Fetch a instruction at PC: " << MipsSimulator.PC - 1 << token << endl;
@@ -22,8 +22,15 @@ void PipelineClass::Data_Preparation(int &state, int busyreg[4])
 	//MipsSimulator.log << "Data Prepared for the instruction at PC: " << myPC << endl;
 	clog << "---\nData Prepared for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "argutoken is " << argutoken << endl;
-	clog << "arguToken is " << argutoken << endl;
-	MipsSimulator.op_class_tab[UsefulStructures::op_num::empty]->data_preparation(argutoken, r, state, busyreg);
+	clog << token << endl;
+	MipsSimulator.op_class_tab[UsefulStructures::op_num::empty]->data_preparation(token, r, state, busyreg);
+
+	if (token.op == UsefulStructures::op_num::jal || token.op == UsefulStructures::op_num::jalr) {
+		r[2] = 31;
+		r[3] = myPC + 1;
+		r[4] = 2;
+		usefulstructures.addBusy(31, busyreg);
+	}
 }
 
 void PipelineClass::Execution(int &state, int busyreg[4])
@@ -73,11 +80,11 @@ PipelineClass::PipelineClass(const unsigned & _PC) :myPC(_PC) {}
 void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
 {
 	////MipsSimulator.log << "Start next level of the instruction on PC: " << myPC;
-	clog << "Start next level of the instruction on PC: " << myPC;
+	clog << "\nStart next level of the instruction on PC: " << myPC;
 
 	if (state == UsefulStructures::pip_run_state::run) {
-		//MipsSimulator.log << " Run" << endl;
-	clog << " Run" << endl;
+		//MipsSimulator.log << " (Run)" << endl;
+	clog << " (Run)" << endl;
 		switch (nowpip) {
 		case 1:
 			Instruction_Fetch();
@@ -103,7 +110,7 @@ void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
 		}
 	}
 	else if (state == UsefulStructures::pip_run_state::pause) {
-		clog << " Pause" << endl;
+		clog << " (Pause)" << endl;
 	}
 	else if (state == UsefulStructures::pip_run_state::clear) {
 		clog << " It's in clear state" << endl;
