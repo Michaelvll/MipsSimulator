@@ -11,9 +11,9 @@ extern MipsSimulatorClass MipsSimulator;
 class PipelineClass {
 private:
 	UsefulStructures::Token token; // for IF
-	int op;
 	UsefulStructures::arguToken argutoken;
-	long long r[5];
+	int op = 0;
+	long long r[5] = { 0 };
 	string s;
 
 	//int mywait = 0;
@@ -26,7 +26,7 @@ private:
 public:
 	// Here should be some useful varient
 	int nowpip = 1;
-	unsigned myPC;
+	unsigned myPC = 0;
 	PipelineClass(const unsigned & _PC);
 
 	void StartNext(int &state, int &wait, int busyreg[4]);

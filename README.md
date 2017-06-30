@@ -16,10 +16,11 @@ Scan the source code twice:
 ## The meaning of r[4]
 * r[4] == 1 clear
 * r[4] == 2 write r[1] into reg[r[0]], r[3] into reg[r[2]]
+* r[4] == 3 write r[1] into reg[r[0]]
 * r[4] == 5 wait 5 cycles
 * r[4] == -1 stopall
 * r[4] == -2 stopall and cout << r[2]
-* r[4] == -3 need read from mem at the adress r[1] to r[1]+r[2]
+* r[4] == -3 need read from mem at the adress r[1] to r[1]+r[2]-1. and write it back to reg[r[0]]		Load Command
 * //r[4] == -4 need write back to register r[0]
 * r[4] == -5 need write back r[1] of the length r[2] to mem[r[0]]    Store command
 * r[4] == -6 need read int from I/O device to r[1]    Syscall 5
