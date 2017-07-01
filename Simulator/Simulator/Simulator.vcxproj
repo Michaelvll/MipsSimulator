@@ -86,12 +86,13 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <StackReserveSize>10000000</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,6 +140,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandClass.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MipsSimulatorClass.cpp" />
+    <ClCompile Include="PipelineClass.cpp" />
+    <ClCompile Include="UsefulStructures.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MipsSimulatorClass.h" />
+    <ClInclude Include="CommandClass.h" />
+    <ClInclude Include="PipelineClass.h" />
+    <ClInclude Include="UsefulStructures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
