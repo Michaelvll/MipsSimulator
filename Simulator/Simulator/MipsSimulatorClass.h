@@ -48,7 +48,7 @@ private:
 	template<typename T>
 	T Get_Next_Num(const string &s, size_t &pos);
 	string Get_Next_String(const string &s, size_t &pos);
-	string String_Fetch(const string &s);
+	string String_Fetch(const string &s, size_t &pos);
 	bool isReg(const string &s);
 	bool Text_labelProcess(const string &s, state_num &state);
 	void Data_Process(string s, state_num &state);
