@@ -13,7 +13,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	for (int i = 0; i < 4 * 1024 * 1024; ++i) {
 		memory[i] = 0;
 	}
-	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024 - 1;
+	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024;
 
 	// Initialize the unordered_map of register .no
 	reg_num_tab["zero"] = UsefulStructures::reg_num::zero;
@@ -206,8 +206,10 @@ string MipsSimulatorClass::String_Fetch(const string & s)
 {
 	string fs;
 	size_t pos = 0;
+	for (; pos<s.length() && s[pos] != '\"' && s[pos]!= '\''; ++pos);
+	++pos;
 	for (; pos < s.length(); ++pos) {
-		if (s[pos] == '\"' || '\'')continue;
+		if (s[pos] == '\"'||s[pos] == '\'')break;
 		else if (s[pos] == '\\') {
 			++pos;
 			switch (s[pos]) {
@@ -246,6 +248,7 @@ string MipsSimulatorClass::String_Fetch(const string & s)
 				break;
 			case '\0':
 				fs += '\0';
+				break;
 			}
 		}
 		else {
@@ -880,6 +883,11 @@ void MipsSimulatorClass::pipeline()
 
 		if (PC < expr.size() && (line.empty() || (run_state == UsefulStructures::pip_run_state::run &&line.back().nowpip > 1)))
 			line.push_back(PipelineClass(PC));
+		if (line.empty()) {
+			clog << "There is nothing in pipeline before syscall 10 or 17 appear" << endl;
+			MipsSimulator.log << "There is nothing in pipeline before syscall 10 or 17 appear" << endl;
+			break;
+		}
 		if (run_state != UsefulStructures::pip_run_state::clear)
 			run_state = UsefulStructures::pip_run_state::run;
 		if (line.empty())
@@ -925,8 +933,10 @@ void MipsSimulatorClass::pipeline()
 	log << "===================================================================================================" << endl;
 	//clog << "Pipline COMPLETE" << endl;
 	log << "Pipline COMPLETE" << endl;
-	//clog << "===================================================================================================" << endl;	log << "===================================================================================================" << endl;
-	//clog << "===================================================================================================" << endl;	log << "===================================================================================================" << endl;
+	//clog << "===================================================================================================" << endl;
+	log << "===================================================================================================" << endl;
+	//clog << "===================================================================================================" << endl;
+	log << "===================================================================================================" << endl;
 
 	log.close();
 

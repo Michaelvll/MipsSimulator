@@ -10,6 +10,7 @@ extern UsefulStructures usefulstructures;
 void PipelineClass::Instruction_Fetch()
 {
 	//clog << "---\nInstruction Fetch for the instrcution at PC: " << myPC << endl;
+	myPC = MipsSimulator.PC;
 	MipsSimulator.log << "---\nInstruction Fetch for the instrcution at PC: " << myPC << endl;
 
 	if (MipsSimulator.PC >= MipsSimulator.expr.size()) return;
@@ -72,7 +73,7 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 			MipsSimulator.log << "Get a syscall the stop the program and output a number" << endl;
 
 			state = UsefulStructures::pip_run_state::stopALL;
-			cout << r[2] << endl;
+			//cout << r[2] << endl;
 		}
 	}
 	if (token.op == UsefulStructures::op_num::jal || token.op == UsefulStructures::op_num::jalr) {
