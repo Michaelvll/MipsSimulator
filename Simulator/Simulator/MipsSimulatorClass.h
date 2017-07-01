@@ -19,7 +19,7 @@ class MipsSimulatorClass {
 private:
 	
 	// Command that different from the given ones (each one represents a serie:
-	// add, sub, mul, div, xor, div
+	// add, sub, mul, div, xor1, div
 	enum state_num {
 		data, text
 	};

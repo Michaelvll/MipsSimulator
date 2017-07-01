@@ -66,7 +66,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_num_tab["divu"] = UsefulStructures::op_num::divu;
 	op_num_tab["div2"] = UsefulStructures::op_num::div2;
 	op_num_tab["divu2"] = UsefulStructures::op_num::divu2;
-	op_num_tab["xor"] = UsefulStructures::op_num::xor;
+	op_num_tab["xor1"] = UsefulStructures::op_num::xor1;
 	op_num_tab["xoru"] = UsefulStructures::op_num::xoru;
 	op_num_tab["neg"] = UsefulStructures::op_num::neg;
 	op_num_tab["negu"] = UsefulStructures::op_num::negu;
@@ -123,7 +123,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_class_tab[UsefulStructures::op_num::divu] = new CommandClass::Divu;
 	op_class_tab[UsefulStructures::op_num::div2] = new CommandClass::Div2;
 	op_class_tab[UsefulStructures::op_num::divu2] = new CommandClass::Divu2;
-	op_class_tab[UsefulStructures::op_num::xor] = new CommandClass::Xor;
+	op_class_tab[UsefulStructures::op_num::xor1] = new CommandClass::xor1;
 	op_class_tab[UsefulStructures::op_num::xoru] = new CommandClass::Xoru;
 	op_class_tab[UsefulStructures::op_num::neg] = new CommandClass::Neg;
 	op_class_tab[UsefulStructures::op_num::negu] = new CommandClass::Negu;

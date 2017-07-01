@@ -13,6 +13,7 @@ public:
 		virtual bool exec(long long r[5], int busy_reg[4]) = 0;
 		void memory_access(long long r[5], string &s);
 		void write_back(long long r[5], int busyreg[4], string &s);
+		virtual ~Command_Base();
 	};
 	/// Classes of command
 	class Empty:public Command_Base{
@@ -83,7 +84,7 @@ public:
 		bool exec(long long r[5], int busy_reg[2]);
 	};
 
-	class Xor : public Command_Base {
+	class xor1 : public Command_Base {
 	public:
 		bool exec(long long r[5], int busy_reg[2]);
 	};

@@ -7,7 +7,7 @@ class UsefulStructures {
 public:
 	enum op_num {
 		empty, add = 1, addu, sub, subu, mul, mulu, mul2, mulu2, div, divu, div2,
-		divu2, xor, xoru, neg, negu, rem, remu, li, seq, sge, sgt,
+		divu2, xor1, xoru, neg, negu, rem, remu, li, seq, sge, sgt,
 		sle, slt, sne, b, beq, bne, bge, ble, bgt, blt, beqz, bnez, blez, bgez,
 		bgtz, bltz, j, jr, jal, jalr, la, lb, lh, lw, sb, sh, sw, move, mfhi,
 		mflo, nop, syscall

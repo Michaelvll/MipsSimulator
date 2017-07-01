@@ -254,13 +254,13 @@ bool CommandClass::Divu2::exec(long long r[5], int busy_reg[2])
 	return true;
 }
 
-bool CommandClass::Xor::exec(long long r[5], int busy_reg[2])
+bool CommandClass::xor1::exec(long long r[5], int busy_reg[2])
 {
 	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
 	/// Output r[1] which can be used as static_cast<int> (r[1])
 
-	//clog << "Execute Xor" << endl;
-	MipsSimulator.log << "Execute Xor" << endl;
+	//clog << "Execute xor1" << endl;
+	MipsSimulator.log << "Execute xor1" << endl;
 
 
 
@@ -1314,4 +1314,6 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 		usefulstructures.delBusy(static_cast<unsigned>(r[0]), busyreg);
 	}
 }
+
+CommandClass::Command_Base::~Command_Base(){}
 
