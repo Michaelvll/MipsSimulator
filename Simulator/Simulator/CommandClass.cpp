@@ -1125,7 +1125,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 	}
 }
 
-void CommandClass::Command_Base::memory_access(long long r[5], string &s)
+void CommandClass::Command_Base::memory_access(long long r[5], string &s, bool &memory_busy)
 {
 	if (r[4] == -9) {
 		char c = MipsSimulator.memory[r[2]];
@@ -1135,6 +1135,11 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 		}
 		//clog << "r[4] is -9, and get a string from mem[r[2]](mem[" << r[2] << "]) and the string is " << s << endl;
 		//MipsSimulator.log << "r[4] is -9, and get a string from mem[r[2]](mem[" << r[2] << "]) and the string is " << s << endl;
+
+		//clog << " write back to the I/O device with the string " << s << endl;
+		//MipsSimulator.log << " write back to the I/O device with the string " << s << endl;
+		cout << s;
+		memory_busy = true;
 	}
 	else if (r[4] == -6) {
 		/// syscall
@@ -1157,6 +1162,7 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 		//clog << "r[4] is -3, and get a string from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[0] + r[2] - 1 << ")  and the string is " << s << endl;
 		//MipsSimulator.log << "r[4] is -3, and get a number from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[1] + r[2] - 1 << ")  and the number is " << *(reinterpret_cast<unsigned*>(tmp)) << endl;
 		if (r[2] != 0) r[1] = *(reinterpret_cast<unsigned*>(tmp));
+		memory_busy = true;
 	}
 	else if (r[4] == -11) {
 		cin >> s;
@@ -1164,6 +1170,40 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 		if (s.length() > static_cast<unsigned> (r[3] - 1)) s = s.substr(0, r[3] - 1);
 		//clog << "r[4] is -11, and get a string of length " << s.length() << " from the I/O device which is " << s << endl;
 		//MipsSimulator.log << "r[4] is -11, and get a string of length " << s.length() << " from the I/O device which is " << s << endl;
+
+		//clog << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
+		//MipsSimulator.log << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
+		for (unsigned i = 0; i < s.length(); ++i) {
+			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
+		}
+		//if (r[2] + s.length() > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
+		memory_busy = true;
+	}
+	else if (r[4] == -2) {
+		//clog << " write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
+		//MipsSimulator.log << "write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
+		cout << static_cast<int>(r[2]);
+	}
+	else if (r[4] == -5) {
+		//clog << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
+		//MipsSimulator.log << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
+		char *tmp = reinterpret_cast<char*> (&r[1]);
+		for (int i = 0; i < r[2]; ++i) {
+			if (r[0] + i > 4 * 1024 * 1024) throw(0);
+			MipsSimulator.memory[r[0] + i] = tmp[i];
+		}
+		//if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
+		memory_busy = true;
+	}
+	else if (r[4] == -7) {
+		//clog << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
+		//MipsSimulator.log << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
+		cout << static_cast<int>(r[2]);
+	}
+	else if (r[4] == -10) {
+		//clog << " allocate new place with length of " << static_cast<unsigned> (r[2]) << endl;
+		//MipsSimulator.log << " allocate new place with length of " << static_cast<unsigned> (r[2]) << endl;
+		MipsSimulator.mem_pos += static_cast<int>(r[2]);
 	}
 	else if (r[4] < -11 || r[4] > 5 || r[4] == 4) {
 		//clog << "Get a unknown r[4]!!!!!!!!" << endl;
@@ -1187,31 +1227,6 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 			usefulstructures.delBusy(static_cast<int>(r[2]), busyreg);
 		}
 	}
-	else if (r[4] == -2) {
-		//clog << " write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
-		//MipsSimulator.log << "write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
-		cout << static_cast<int>(r[2]);
-	}
-	else if (r[4] == -9) {
-		//clog << " write back to the I/O device with the string " << s << endl;
-		//MipsSimulator.log << " write back to the I/O device with the string " << s << endl;
-		cout << s;
-	}
-	else if (r[4] == -5) {
-		//clog << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
-		//MipsSimulator.log << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
-		char *tmp = reinterpret_cast<char*> (&r[1]);
-		for (int i = 0; i < r[2]; ++i) {
-			if (r[0] + i > 4 * 1024 * 1024) throw(0);
-			MipsSimulator.memory[r[0] + i] = tmp[i];
-		}
-		//if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
-	}
-	else if (r[4] == -7) {
-		//clog << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
-		//MipsSimulator.log << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
-		cout << static_cast<int>(r[2]);
-	}
 	else if (r[4] == -8) {
 		//clog << " write back to the reg$" << r[0] << "(lo) and reg$" << r[1] << "(hi) with the chars(4 chars each) reinterpreted from " << r[2] << endl;
 		//MipsSimulator.log << " write back to the reg$" << r[0] << "(lo) and reg$" << r[1] << "(hi) with the chars(4 chars each) reinterpreted from " << r[2] << endl;
@@ -1223,19 +1238,10 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 		usefulstructures.delBusy(static_cast<int>(r[1]), busyreg);
 	}
 	else if (r[4] == -10) {
-		//clog << " allocate new place with length of " << static_cast<unsigned> (r[2]) << " and write back the first address back to reg$" << r[0] << endl;
-		//MipsSimulator.log << " allocate new place with length of " << static_cast<unsigned> (r[2]) << " and write back the first address back to reg$" << r[0] << endl;
-		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos;
-		MipsSimulator.mem_pos += static_cast<int>(r[2]);
+		//clog << " write back the first address of the allocated space in memory of the length of "<< static_cast<int>(r[2]) <<" back to reg$" << r[0] << endl;
+		//MipsSimulator.log << " write back the first address of the allocated space in memory of the length of "<< static_cast<int>(r[2]) <<" back to reg$" << r[0] << endl;
+		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos - static_cast<int>(r[2]);
 		usefulstructures.delBusy(static_cast<int>(r[0]), busyreg);
-	}
-	else if (r[4] == -11) {
-		//clog << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
-		//MipsSimulator.log << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
-		for (unsigned i = 0; i < s.length(); ++i) {
-			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
-		}
-		//if (r[2] + s.length() > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
 	}
 	else if (r[4] == -3) {
 		unsigned tmp = static_cast<unsigned>(r[1]);
