@@ -84,7 +84,7 @@ public:
 		bool exec(long long r[5], int busy_reg[4]);
 	};
 
-	class xor1 : public Command_Base {
+	class Xor1 : public Command_Base {
 	public:
 		bool exec(long long r[5], int busy_reg[4]);
 	};
