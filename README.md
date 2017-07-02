@@ -19,11 +19,12 @@ Scan the source code twice:
 2. Secondly, replace the labels with the address, change the command strings into tokens and put them into a vector of Token *Expr*.
 ### Pipeline
 #### General
-Every instruction(will be represented by ins. in the later context) on the pipeline is represented by a class called *PiplineClass*. The structure of the deque is in the [image](#Image_of_the_deque) (some of the stages may not appear in some cycles for there might be some hazard that pause the pipeline for some cycle).
-<a name="Image_of_the_deque">
-| Stage: | line.front |   5   |   4   |   3   |   2   |   1   |  line.back |
-| ---- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-</a>
+Every instruction(will be represented by ins. in the later context) on the pipeline is represented by a class called *PiplineClass*. The structure of the deque is in the [line](#Image_of_the_deque) below (some of the stages may not appear in some cycles for there might be some hazard that pause the pipeline for some cycle).
+
+<a name="Image_of_the_deque">Line of the pipeline</a>
+
+|   Stage:   | line.front |      5     |      4     |      3     |      2     |      1     |  line.back |
+| ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
 
 And the pipeline is simulated by a deque(called *line*) of *piplineClass*es. In every clock cycle, the line will be traversed. And for each ins. got they will call the function *StartNext* which will figure out whether there is a hazard for this stage to execute, and execute the stage or pause the pipeline behind it.
 
