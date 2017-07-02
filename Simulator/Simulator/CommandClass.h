@@ -11,7 +11,7 @@ public:
 		bool read_first_reg = false;
 		void data_preparation(const UsefulStructures::Token &token, long long res[5], int &state, int busyreg[4]);
 		virtual bool exec(long long r[5], int busy_reg[4]) = 0;
-		void memory_access(long long r[5], string &s);
+		void memory_access(long long r[5], string &s, bool &memory_busy);
 		void write_back(long long r[5], int busyreg[4], string &s);
 		virtual ~Command_Base();
 	};
@@ -84,7 +84,7 @@ public:
 		bool exec(long long r[5], int busy_reg[4]);
 	};
 
-	class xor1 : public Command_Base {
+	class Xor1 : public Command_Base {
 	public:
 		bool exec(long long r[5], int busy_reg[4]);
 	};

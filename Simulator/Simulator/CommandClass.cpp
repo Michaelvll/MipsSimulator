@@ -39,11 +39,9 @@ bool CommandClass::Add::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Add" << endl;
 	//MipsSimulator.log << "Execute Add" << endl;
 
-
-
 	r[1] = static_cast<int>(r[1]) + static_cast<int>(r[2]);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -55,11 +53,10 @@ bool CommandClass::Addu::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Addu" << endl;
 	//MipsSimulator.log << "Execute Addu" << endl;
 
-
-
-	r[1] = r[1] + r[2];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	unsigned a = static_cast<unsigned>(r[1]) + static_cast<unsigned>(r[2]);
+	r[1] = static_cast<long long> (a);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -70,12 +67,10 @@ bool CommandClass::Sub::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Sub" << endl;
 	//MipsSimulator.log << "Execute Sub" << endl;
-
-
-
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	
 	r[1] = static_cast<int>(r[1]) - static_cast<int>(r[2]);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -87,11 +82,10 @@ bool CommandClass::Subu::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Subu" << endl;
 	//MipsSimulator.log << "Execute Subu" << endl;
 
-
-
-	r[1] = r[1] - r[2];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	unsigned a = static_cast<unsigned>(r[1]) - static_cast<unsigned>(r[2]);
+	r[1] = static_cast<long long> (a);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -102,8 +96,6 @@ bool CommandClass::Mul::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Mul" << endl;
 	//MipsSimulator.log << "Execute Mul" << endl;
-
-
 
 	int a = static_cast<int>(r[1]) * static_cast<int>(r[2]);
 	r[1] = static_cast<long long> (a);
@@ -120,9 +112,8 @@ bool CommandClass::Mulu::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Mulu" << endl;
 	//MipsSimulator.log << "Execute Mulu" << endl;
 
-
-
-	r[1] = static_cast<unsigned>(r[1]) * static_cast<unsigned>(r[2]);
+	unsigned c = static_cast<unsigned>(r[1]) * static_cast<unsigned>(r[2]);
+	r[1] = static_cast<long long> (c);
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
 	return true;
@@ -140,9 +131,8 @@ bool CommandClass::Mul2::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Mul2" << endl;
 	//MipsSimulator.log << "Execute Mul2" << endl;
 
-
-
-	r[2] = r[1] * r[4];
+	int a = static_cast<int>(r[4]), b = static_cast<int> (r[1]);
+	r[2] = static_cast<long long>(a) * static_cast<long long> (b);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -160,8 +150,6 @@ bool CommandClass::Mulu2::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Mulu2" << endl;
 	//MipsSimulator.log << "Execute Mulu2" << endl;
-
-
 
 	unsigned long long a = static_cast<unsigned long long>(r[1]), b = static_cast<unsigned long long>(r[4]);
 	unsigned long long c = a * b;
@@ -182,11 +170,9 @@ bool CommandClass::Div::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Div" << endl;
 	//MipsSimulator.log << "Execute Div" << endl;
 
-
-
 	r[1] = static_cast<int>(r[1]) / static_cast<int>(r[2]);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -198,11 +184,9 @@ bool CommandClass::Divu::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Divu" << endl;
 	//MipsSimulator.log << "Execute Divu" << endl;
 
-
-
 	r[1] = static_cast<unsigned>(r[1]) / static_cast<unsigned>(r[2]);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 CommandClass::Div2::Div2() {
@@ -216,8 +200,6 @@ bool CommandClass::Div2::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Div2" << endl;
 	//MipsSimulator.log << "Execute Div2" << endl;
-
-
 
 	int a = static_cast<int>(r[4]), b = static_cast<int>(r[1]);
 	r[2] = a / b;
@@ -241,8 +223,6 @@ bool CommandClass::Divu2::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Divu2" << endl;
 	//MipsSimulator.log << "Execute Divu2" << endl;
 
-
-
 	unsigned a = static_cast<unsigned>(r[4]), b = static_cast<unsigned>(r[1]);
 	r[2] = a / b;
 	r[2] |= (static_cast<unsigned long long>(a % b) << 32);
@@ -254,15 +234,13 @@ bool CommandClass::Divu2::exec(long long r[5], int busy_reg[4])
 	return true;
 }
 
-bool CommandClass::xor1::exec(long long r[5], int busy_reg[4])
+bool CommandClass::Xor1::exec(long long r[5], int busy_reg[4])
 {
 	/// Input r[1] and r[2] which should be static_cast<long long> (unsigned)
 	/// Output r[1] which can be used as static_cast<int> (r[1])
 
 	//clog << "Execute xor1" << endl;
-	//MipsSimulator.log << "Execute xor1" << endl;
-
-
+	//MipsSimulator.log << "Execute Xor1" << endl;
 
 	r[1] = r[1] ^ r[2];
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -278,11 +256,9 @@ bool CommandClass::Xoru::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Xoru" << endl;
 	//MipsSimulator.log << "Execute Xoru" << endl;
 
-
-
 	r[1] = r[1] ^ r[2];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -293,8 +269,6 @@ bool CommandClass::Neg::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Neg" << endl;
 	//MipsSimulator.log << "Execute Neg" << endl;
-
-
 
 	r[1] = -r[1];
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -309,8 +283,6 @@ bool CommandClass::Negu::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Negu" << endl;
 	//MipsSimulator.log << "Execute Negu" << endl;
-
-
 
 	unsigned a = static_cast<unsigned> (r[1]);
 	unsigned b = -a;
@@ -328,12 +300,10 @@ bool CommandClass::Rem::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Rem" << endl;
 	//MipsSimulator.log << "Execute Rem" << endl;
 
-
-
 	int c = static_cast<int>(r[1]) % static_cast<int>(r[2]);
 	r[1] = static_cast<long long>(c);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -345,11 +315,10 @@ bool CommandClass::Remu::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Remu" << endl;
 	//MipsSimulator.log << "Execute Remu" << endl;
 
-
-
-	r[1] = r[1] % r[2];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	unsigned a = static_cast<unsigned>(r[1]) % static_cast<unsigned>(r[2]);
+	r[1] = a;
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -358,8 +327,6 @@ bool CommandClass::Li::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Li" << endl;
 	//MipsSimulator.log << "Execute Li" << endl;
-
-
 
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
@@ -373,8 +340,6 @@ bool CommandClass::Seq::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Seq" << endl;
 	//MipsSimulator.log << "Execute Seq" << endl;
-
-
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a == b) ? 1 : 0;
@@ -498,8 +463,8 @@ bool CommandClass::Beq::exec(long long r[5], int busy_reg[4])
 	//MipsSimulator.log << "Execute Beq" << endl;
 
 
-
-	r[4] = (r[4] == r[1]) ? 1 : 0;
+	int a = static_cast<int> (r[4]), b = static_cast<int>(r[1]);
+	r[4] = (a == b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
 	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -519,8 +484,8 @@ bool CommandClass::Bne::exec(long long r[5], int busy_reg[4])
 	//MipsSimulator.log << "Execute Bne" << endl;
 
 
-
-	r[4] = (r[4] != r[1]) ? 1 : 0;
+	int a = static_cast<int> (r[4]), b = static_cast<int>(r[1]);
+	r[4] = (a != b) ? 1 : 0;
 	r[1] = r[2];
 	r[0] = UsefulStructures::reg_num::pc;
 	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -627,12 +592,10 @@ bool CommandClass::Beqz::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Beqz" << endl;
 	//MipsSimulator.log << "Execute Beqz" << endl;
 
-
-
 	int a = static_cast<int>(r[4]);
 	r[4] = (a == 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	if (r[4] == 1)usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -648,12 +611,10 @@ bool CommandClass::Bnez::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Bnez" << endl;
 	//MipsSimulator.log << "Execute Bnez" << endl;
 
-
-
 	int a = static_cast<int>(r[4]);
 	r[4] = (a != 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	if (r[4] == 1)usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -695,7 +656,7 @@ bool CommandClass::Bgez::exec(long long r[5], int busy_reg[4])
 	int a = static_cast<int>(r[4]);
 	r[4] = (a >= 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	if (r[4] == 1)usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -732,12 +693,10 @@ bool CommandClass::Bltz::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Bltz" << endl;
 	//MipsSimulator.log << "Execute Bltz" << endl;
 
-
-
 	int a = static_cast<int>(r[4]);
 	r[4] = (a < 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
-	if (r[4] == 1)usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
+	if (r[4] == 1) usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return false;
 }
 
@@ -748,8 +707,6 @@ bool CommandClass::J::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute J" << endl;
 	//MipsSimulator.log << "Execute J" << endl;
-
-
 
 	r[1] = r[0];
 	r[4] = 1;
@@ -963,8 +920,6 @@ bool CommandClass::Move::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Move" << endl;
 	//MipsSimulator.log << "Execute Move" << endl;
 
-
-
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
 	return true;
@@ -975,7 +930,6 @@ bool CommandClass::Mfhi::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Mfhi" << endl;
 	//MipsSimulator.log << "Execute Mfhi" << endl;
-
 
 	//r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::hi]);
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -989,8 +943,6 @@ bool CommandClass::Mflo::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Mflo" << endl;
 	//MipsSimulator.log << "Execute Mflo" << endl;
 
-
-
 	//r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::lo]);
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
@@ -1003,9 +955,6 @@ bool CommandClass::Nop::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Nop" << endl;
 	//MipsSimulator.log << "Execute Nop" << endl;
-
-
-
 	return false;
 }
 
@@ -1018,8 +967,6 @@ bool CommandClass::Syscall::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Syscall" << endl;
 	//MipsSimulator.log << "Execute Syscall" << endl;
-
-
 
 	switch (r[1]) {
 	case 1:
@@ -1054,8 +1001,6 @@ bool CommandClass::Empty::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Empty!!!!" << endl;
 	//MipsSimulator.log << "Execute Empty!!!!" << endl;
-
-
 
 	return false;
 }
@@ -1127,8 +1072,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 				//MipsSimulator.log << "r[" << i << "] as the content of reg$" << token.r[i] << ": " << res[i] << '\n';
 			}
 			else if (token.rstate[i] == UsefulStructures::r_state::immi) {
-				unsigned tmp = token.r[i];
-				res[i] = static_cast<long long> (tmp);
+				res[i] = static_cast<long long> (token.r[i]);
 
 				//clog << "r[" << i << "] as a immidiate num: " << res[i] << endl;
 				//MipsSimulator.log << "r[" << i << "] as a immidiate num: " << res[i] << endl;
@@ -1169,19 +1113,19 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 		if (MipsSimulator.op_class_tab[token.op]->read_first_reg && token.rstate[0] == UsefulStructures::r_state::regi) {
 			//clog << "Now op needs to read the first reg$" << res[0] << endl;
 			//MipsSimulator.log << "Now op needs to read the first reg$" << res[0] << endl;
-			if (usefulstructures.Busy(static_cast<int>(res[0]), busyreg)) {
+			if (usefulstructures.Busy(static_cast<unsigned>(res[0]), busyreg)) {
 				state = UsefulStructures::pip_run_state::pause;
 				//clog << "Find the reg$"<< res[0] <<" is busy and pause" << endl;
 				//MipsSimulator.log << "Find the reg$" << res[0] << " is busy and pause" << endl;
 				return;
 			}
-			res[4] = static_cast<long long> (MipsSimulator.reg[token.r[0]]);
+			res[4] = static_cast<long long> (MipsSimulator.reg[res[0]]);
 			//MipsSimulator.log << "r[4] as the content of reg$" << res[0] << ": " << res[4] << endl;
 		}
 	}
 }
 
-void CommandClass::Command_Base::memory_access(long long r[5], string &s)
+void CommandClass::Command_Base::memory_access(long long r[5], string &s, bool &memory_busy)
 {
 	if (r[4] == -9) {
 		char c = MipsSimulator.memory[r[2]];
@@ -1191,6 +1135,11 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 		}
 		//clog << "r[4] is -9, and get a string from mem[r[2]](mem[" << r[2] << "]) and the string is " << s << endl;
 		//MipsSimulator.log << "r[4] is -9, and get a string from mem[r[2]](mem[" << r[2] << "]) and the string is " << s << endl;
+
+		//clog << " write back to the I/O device with the string " << s << endl;
+		//MipsSimulator.log << " write back to the I/O device with the string " << s << endl;
+		cout << s;
+		memory_busy = true;
 	}
 	else if (r[4] == -6) {
 		/// syscall
@@ -1213,16 +1162,48 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s)
 		//clog << "r[4] is -3, and get a string from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[0] + r[2] - 1 << ")  and the string is " << s << endl;
 		//MipsSimulator.log << "r[4] is -3, and get a number from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[1] + r[2] - 1 << ")  and the number is " << *(reinterpret_cast<unsigned*>(tmp)) << endl;
 		if (r[2] != 0) r[1] = *(reinterpret_cast<unsigned*>(tmp));
+		memory_busy = true;
 	}
 	else if (r[4] == -11) {
-		char c;
+		cin >> s;
 		unsigned cnt = 0;
-		while (cin.get(c) && cnt < static_cast<unsigned>(r[3] - 1)) {
-			s += c;
-			++cnt;
-		}
+		if (s.length() > static_cast<unsigned> (r[3] - 1)) s = s.substr(0, r[3] - 1);
 		//clog << "r[4] is -11, and get a string of length " << s.length() << " from the I/O device which is " << s << endl;
 		//MipsSimulator.log << "r[4] is -11, and get a string of length " << s.length() << " from the I/O device which is " << s << endl;
+
+		//clog << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
+		//MipsSimulator.log << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
+		for (unsigned i = 0; i < s.length(); ++i) {
+			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
+		}
+		//if (r[2] + s.length() > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
+		memory_busy = true;
+	}
+	else if (r[4] == -2) {
+		//clog << " write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
+		//MipsSimulator.log << "write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
+		cout << static_cast<int>(r[2]);
+	}
+	else if (r[4] == -5) {
+		//clog << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
+		//MipsSimulator.log << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
+		char *tmp = reinterpret_cast<char*> (&r[1]);
+		for (int i = 0; i < r[2]; ++i) {
+			if (r[0] + i > 4 * 1024 * 1024) throw(0);
+			MipsSimulator.memory[r[0] + i] = tmp[i];
+		}
+		//if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
+		memory_busy = true;
+	}
+	else if (r[4] == -7) {
+		//clog << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
+		//MipsSimulator.log << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
+		cout << static_cast<int>(r[2]);
+	}
+	else if (r[4] == -10) {
+		//clog << " allocate new place with length of " << static_cast<unsigned> (r[2]) << endl;
+		//MipsSimulator.log << " allocate new place with length of " << static_cast<unsigned> (r[2]) << endl;
+		MipsSimulator.mem_pos += static_cast<int>(r[2]);
 	}
 	else if (r[4] < -11 || r[4] > 5 || r[4] == 4) {
 		//clog << "Get a unknown r[4]!!!!!!!!" << endl;
@@ -1246,30 +1227,6 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 			usefulstructures.delBusy(static_cast<int>(r[2]), busyreg);
 		}
 	}
-	else if (r[4] == -2) {
-		//clog << " write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
-		//MipsSimulator.log << "write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
-		cout << static_cast<int>(r[2]);
-	}
-	else if (r[4] == -9) {
-		//clog << " write back to the I/O device with the string " << s << endl;
-		//MipsSimulator.log << " write back to the I/O device with the string " << s << endl;
-		cout << s;
-	}
-	else if (r[4] == -5) {
-		//clog << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
-		//MipsSimulator.log << " write back to the memory[" << r[0] << "] to memory[" << r[0] + r[2] - 1 << "] with the chars reinterpreted from " << r[1] << endl;
-		char *tmp = reinterpret_cast<char*> (&r[1]);
-		for (int i = 0; i < r[2]; ++i) {
-			MipsSimulator.memory[r[0] + i] = tmp[i];
-		}
-		//if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
-	}
-	else if (r[4] == -7) {
-		//clog << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
-		//MipsSimulator.log << " write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;
-		cout << static_cast<int>(r[2]);
-	}
 	else if (r[4] == -8) {
 		//clog << " write back to the reg$" << r[0] << "(lo) and reg$" << r[1] << "(hi) with the chars(4 chars each) reinterpreted from " << r[2] << endl;
 		//MipsSimulator.log << " write back to the reg$" << r[0] << "(lo) and reg$" << r[1] << "(hi) with the chars(4 chars each) reinterpreted from " << r[2] << endl;
@@ -1281,19 +1238,10 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 		usefulstructures.delBusy(static_cast<int>(r[1]), busyreg);
 	}
 	else if (r[4] == -10) {
-		//clog << " allocate new place with length of " << static_cast<unsigned> (r[2]) << " and write back the first address back to reg$" << r[0] << endl;
-		//MipsSimulator.log << " allocate new place with length of " << static_cast<unsigned> (r[2]) << " and write back the first address back to reg$" << r[0] << endl;
-		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos;
-		MipsSimulator.mem_pos += static_cast<int>(r[2]);
+		//clog << " write back the first address of the allocated space in memory of the length of "<< static_cast<int>(r[2]) <<" back to reg$" << r[0] << endl;
+		//MipsSimulator.log << " write back the first address of the allocated space in memory of the length of "<< static_cast<int>(r[2]) <<" back to reg$" << r[0] << endl;
+		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos - static_cast<int>(r[2]);
 		usefulstructures.delBusy(static_cast<int>(r[0]), busyreg);
-	}
-	else if (r[4] == -11) {
-		//clog << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
-		//MipsSimulator.log << " write the string read from the I/O device back to the memory[" << r[2] << "] to memory[" << r[2] + s.length() - 1 << "]" << endl;
-		for (unsigned i = 0; i < s.length(); ++i) {
-			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
-		}
-		//if (r[2] + s.length() > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
 	}
 	else if (r[4] == -3) {
 		unsigned tmp = static_cast<unsigned>(r[1]);

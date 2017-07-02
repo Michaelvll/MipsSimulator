@@ -84,12 +84,12 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 	}
 }
 
-void PipelineClass::Memory_Access()
+void PipelineClass::Memory_Access(bool &memory_busy)
 {
 	//clog << "---\nMemory Access for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nMemory Access for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 
-	MipsSimulator.op_class_tab[UsefulStructures::op_num::empty]->memory_access(r, s);
+	MipsSimulator.op_class_tab[UsefulStructures::op_num::empty]->memory_access(r, s, memory_busy);
 }
 
 void PipelineClass::Write_Back(int busyreg[4])
@@ -102,7 +102,7 @@ void PipelineClass::Write_Back(int busyreg[4])
 
 PipelineClass::PipelineClass(const unsigned & _PC) :myPC(_PC) {}
 
-void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
+void PipelineClass::StartNext(int &state,bool &memory_busy, int &wait, int busyreg[4])
 {
 	//
 	//clog << "\nStart next level of the instruction on PC: " << myPC;
@@ -116,6 +116,9 @@ void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
 
 		switch (nowpip) {
 		case 1:
+			if (memory_busy) {
+				break;
+			}
 			Instruction_Fetch();
 			++nowpip;
 			break;
@@ -129,7 +132,7 @@ void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
 			++nowpip;
 			break;
 		case 4:
-			Memory_Access();
+			Memory_Access(memory_busy);
 			++nowpip;
 			break;
 		case 5:
@@ -149,7 +152,7 @@ void PipelineClass::StartNext(int &state, int &wait, int busyreg[4])
 
 		switch (nowpip) {
 		case 4:
-			Memory_Access();
+			Memory_Access(memory_busy);
 			break;
 		case 5:
 			Write_Back(busyreg);

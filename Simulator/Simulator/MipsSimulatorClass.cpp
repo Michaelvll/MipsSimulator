@@ -68,7 +68,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_num_tab["divu"] = UsefulStructures::op_num::divu;
 	op_num_tab["div2"] = UsefulStructures::op_num::div2;
 	op_num_tab["divu2"] = UsefulStructures::op_num::divu2;
-	op_num_tab["xor1"] = UsefulStructures::op_num::xor1;
+	op_num_tab["xor"] = UsefulStructures::op_num::xor1;
 	op_num_tab["xoru"] = UsefulStructures::op_num::xoru;
 	op_num_tab["neg"] = UsefulStructures::op_num::neg;
 	op_num_tab["negu"] = UsefulStructures::op_num::negu;
@@ -125,7 +125,7 @@ MipsSimulatorClass::MipsSimulatorClass()
 	op_class_tab[UsefulStructures::op_num::divu] = new CommandClass::Divu;
 	op_class_tab[UsefulStructures::op_num::div2] = new CommandClass::Div2;
 	op_class_tab[UsefulStructures::op_num::divu2] = new CommandClass::Divu2;
-	op_class_tab[UsefulStructures::op_num::xor1] = new CommandClass::xor1;
+	op_class_tab[UsefulStructures::op_num::xor1] = new CommandClass::Xor1;
 	op_class_tab[UsefulStructures::op_num::xoru] = new CommandClass::Xoru;
 	op_class_tab[UsefulStructures::op_num::neg] = new CommandClass::Neg;
 	op_class_tab[UsefulStructures::op_num::negu] = new CommandClass::Negu;
@@ -204,14 +204,32 @@ inline string MipsSimulatorClass::Get_Next_String(const string &s, size_t &pos)
 	return op;
 }
 
-string MipsSimulatorClass::String_Fetch(const string & s)
+string MipsSimulatorClass::String_Fetch(const string & s, size_t &pos)
 {
 	string fs;
-	size_t pos = 0;
-	for (; pos<s.length() && s[pos] != '\"' && s[pos]!= '\''; ++pos);
+	//size_t pos = 0;
+	for (; pos < s.length() && (s[pos] == ' ' || s[pos] == ',' || s[pos] == ':' || s[pos] == '\t' || s[pos] == '('); ++pos);
+	int quot = 2;
+	for (; pos < s.length(); ++pos) {
+		if (s[pos] == '\"') {
+			quot = 2;
+			break;
+		}
+		else if (s[pos] == '\'') {
+			quot = 1;
+			break;
+		}
+	}
 	++pos;
 	for (; pos < s.length(); ++pos) {
-		if (s[pos] == '\"'||s[pos] == '\'')break;
+		if (s[pos] == '\"' && quot == 2) {
+			++pos;
+			break;
+		}
+		else if (s[pos] == '\'' && quot == 1) {
+			++pos;
+			break;
+		}
 		else if (s[pos] == '\\') {
 			++pos;
 			switch (s[pos]) {
@@ -382,8 +400,8 @@ void MipsSimulatorClass::Data_Process(string s, state_num & state)
 
 		}
 		else if (op == ".ascii") {
-			string oristr = Get_Next_String(s, pos);
-			string str = String_Fetch(oristr);
+			//string oristr = Get_Next_String(s, pos);
+			string str = String_Fetch(s, pos);
 			//clog << "Get a command \".ascii " << str << "\"" << endl;
 			//log <<  "Get a command \".ascii " << str << "\"" << endl;
 
@@ -402,8 +420,8 @@ void MipsSimulatorClass::Data_Process(string s, state_num & state)
 
 		}
 		else if (op == ".asciiz") {
-			string oristr = Get_Next_String(s, pos);
-			string str = String_Fetch(oristr);
+			//string oristr = Get_Next_String(s, pos);
+			string str = String_Fetch(s, pos);
 			//clog << "Get a command \".asciiz " << str << "\"" << endl;
 			//log <<  "Get a command \".asciiz " << str << "\"" << endl;
 
@@ -426,7 +444,8 @@ void MipsSimulatorClass::Data_Process(string s, state_num & state)
 			vector<char> vstr;
 			while (pos < s.length()) {
 				string str = Get_Next_String(s, pos);
-				str = String_Fetch(str);
+				size_t tmp = 0;
+				str = String_Fetch(str, tmp);
 				if (str != "") str.push_back(str[0]);
 			}
 
@@ -883,10 +902,11 @@ void MipsSimulatorClass::pipeline()
 	while (true) {
 		++cycle;
 
+		bool memory_busy = false;
 		if (PC < expr.size() && (line.empty() || (run_state == UsefulStructures::pip_run_state::run &&line.back().nowpip > 1)))
 			line.push_back(PipelineClass(PC));
 		if (line.empty()) {
-			clog << "There is nothing in pipeline before syscall 10 or 17 appear" << endl;
+			//clog << "There is nothing in pipeline before syscall 10 or 17 appear" << endl;
 			//log <<  "There is nothing in pipeline before syscall 10 or 17 appear" << endl;
 			break;
 		}
@@ -911,20 +931,18 @@ void MipsSimulatorClass::pipeline()
 		}
 
 		for (deque<PipelineClass>::iterator it = line.begin(); it != line.end(); ++it) {
-			////clog << "At the instruction on Expr_pos: " << it->myPC << endl;
-			////log <<  "At the instruction on Expr_pos: " << it->myPC << endl;
-			it->StartNext(run_state, wait, busyreg);
+			it->StartNext(run_state, memory_busy, wait, busyreg);
 		}
 
 		if (run_state == UsefulStructures::pip_run_state::stopALL) {
-			//clog << "Get stopALL command, end the execution!" << endl;
-			//log <<  "Get stopALL command, end the execution!" << endl;
+			//clog << "\nGet stopALL command, end the execution!" << endl;
+			//log <<  "\nGet stopALL command, end the execution!" << endl;
 			break;
 		}
 
 		if (run_state == UsefulStructures::pip_run_state::clear) {
-			//clog << "Get clear command, clear the instructions before execution" << endl;
-			//log <<  "Get clear command, clear the instructions before execution" << endl;
+			//clog << "\nGet clear command, clear the instructions before execution" << endl;
+			//log <<  "\nGet clear command, clear the instructions before execution" << endl;
 			while (line.back().nowpip <= 3) line.pop_back();
 		}
 
