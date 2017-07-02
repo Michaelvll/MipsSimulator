@@ -14,7 +14,6 @@ private:
 	UsefulStructures::arguToken argutoken;
 	int op = 0;
 	long long r[5] = { 0 };
-	string s;
 
 	//int mywait = 0;
 

@@ -1067,10 +1067,11 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 	}
 }
 
-void CommandClass::Command_Base::memory_access(long long r[5], string &s, bool &memory_busy)
+void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy)
 {
 	if (r[4] == -9) {
 		char c = MipsSimulator.memory[r[2]];
+		string s;
 		for (int i = 1; c != 0; ++i) {
 			s += c;
 			c = MipsSimulator.memory[r[2] + i];
@@ -1107,6 +1108,7 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s, bool &
 		memory_busy = true;
 	}
 	else if (r[4] == -11) {
+		string s;
 		cin >> s;
 		unsigned cnt = 0;
 		if (s.length() > static_cast<unsigned> (r[3] - 1)) s = s.substr(0, r[3] - 1);
@@ -1154,7 +1156,7 @@ void CommandClass::Command_Base::memory_access(long long r[5], string &s, bool &
 	}
 }
 
-void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], string & s)
+void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4])
 {
 	//clog << "r[4] is " << r[4];
 	//MipsSimulator.log << "r[4] is " << r[4];
