@@ -9,9 +9,12 @@ extern UsefulStructures usefulstructures;
 
 void PipelineClass::Instruction_Fetch()
 {
+	/// Fetch the instruction from the memory 
+	/// (in this simulator the instruction is stored in another container, but it can be assumed that it is in the memory)
+	/// In this level control hazard might take place for the memory can be read or write once in a same clock cycle
 	//clog << "---\nInstruction Fetch for the instrcution at PC: " << myPC << endl;
-	myPC = MipsSimulator.PC;
 	//MipsSimulator.log << "---\nInstruction Fetch for the instrcution at PC: " << myPC << endl;
+	myPC = MipsSimulator.PC;
 
 	if (MipsSimulator.PC >= MipsSimulator.expr.size()) return;
 	token = MipsSimulator.expr[MipsSimulator.PC++];
@@ -24,20 +27,22 @@ void PipelineClass::Instruction_Fetch()
 
 void PipelineClass::Data_Preparation(int &state, int busyreg[4])
 {
-	
+	/// Data preparation level of the product on the pipeline
+	/// In this level data hazard might happened when the register, needed to be read has not finished writing process by the instructions before 
+	/// If a register needed to be read is in busy mode then pause the pipeline in front of this command
 	//clog << "---\nData Prepared for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nData Prepared for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
-
-	
 	//clog << token << endl;
 	//MipsSimulator.log << token << endl;
 
 	MipsSimulator.op_class_tab[UsefulStructures::op_num::empty]->data_preparation(token, r, state, busyreg);
-
 }
 
 void PipelineClass::Execution(int &state, int busyreg[4])
 {
+	/// Execution of the products on the pipeline
+	/// In this level the command will be fully recognized and the calculations will be done
+	/// Register that will be written in is locked into busy mode
 	//clog << "---\nExecution for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nExecution for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 
@@ -86,6 +91,8 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 
 void PipelineClass::Memory_Access(bool &memory_busy)
 {
+	/// Memory Access stage of the product on pipeline
+	/// In this level might read or write the Ram which may cause the control hazard to the instruction fetch level
 	//clog << "---\nMemory Access for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nMemory Access for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 
@@ -94,6 +101,8 @@ void PipelineClass::Memory_Access(bool &memory_busy)
 
 void PipelineClass::Write_Back(int busyreg[4])
 {
+	/// Write back stage of the product on pipeline
+	/// In this level the result of the stage befor will write back into certain registers, and it will release these registers into free mode
 	//clog << "---\nWrite Back for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nWrite Back for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 
@@ -104,10 +113,9 @@ PipelineClass::PipelineClass(const unsigned & _PC) :myPC(_PC) {}
 
 void PipelineClass::StartNext(int &state,bool &memory_busy, int &wait, int busyreg[4])
 {
-	//
+	/// Start the next level of the product on the pipeline
 	//clog << "\nStart next level of the instruction on PC: " << myPC;
 	//MipsSimulator.log << "\nStart next level of the instruction on PC: " << myPC;
-
 
 	if (state == UsefulStructures::pip_run_state::run) {
 		

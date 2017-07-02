@@ -67,7 +67,7 @@ bool CommandClass::Sub::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Sub" << endl;
 	//MipsSimulator.log << "Execute Sub" << endl;
-	
+
 	r[1] = static_cast<int>(r[1]) - static_cast<int>(r[2]);
 	r[4] = 3;
 	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
@@ -99,8 +99,8 @@ bool CommandClass::Mul::exec(long long r[5], int busy_reg[4])
 
 	int a = static_cast<int>(r[1]) * static_cast<int>(r[2]);
 	r[1] = static_cast<long long> (a);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -114,8 +114,8 @@ bool CommandClass::Mulu::exec(long long r[5], int busy_reg[4])
 
 	unsigned c = static_cast<unsigned>(r[1]) * static_cast<unsigned>(r[2]);
 	r[1] = static_cast<long long> (c);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -135,9 +135,9 @@ bool CommandClass::Mul2::exec(long long r[5], int busy_reg[4])
 	r[2] = static_cast<long long>(a) * static_cast<long long> (b);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
-	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);	
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 CommandClass::Mulu2::Mulu2() {
@@ -156,9 +156,9 @@ bool CommandClass::Mulu2::exec(long long r[5], int busy_reg[4])
 	r[2] = static_cast<long long>(c);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
-	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);	
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -206,9 +206,9 @@ bool CommandClass::Div2::exec(long long r[5], int busy_reg[4])
 	r[2] |= (static_cast<unsigned long long>(a % b) << 32);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
-	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);	
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 CommandClass::Divu2::Divu2() {
@@ -228,9 +228,9 @@ bool CommandClass::Divu2::exec(long long r[5], int busy_reg[4])
 	r[2] |= (static_cast<unsigned long long>(a % b) << 32);
 	r[0] = UsefulStructures::reg_num::lo;
 	r[1] = UsefulStructures::reg_num::hi;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
-	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);
 	r[4] = -8;
+	usefulstructures.addBusy(static_cast<unsigned>(r[1]), busy_reg);	
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -243,8 +243,8 @@ bool CommandClass::Xor1::exec(long long r[5], int busy_reg[4])
 	//MipsSimulator.log << "Execute Xor1" << endl;
 
 	r[1] = r[1] ^ r[2];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -271,8 +271,8 @@ bool CommandClass::Neg::exec(long long r[5], int busy_reg[4])
 	//MipsSimulator.log << "Execute Neg" << endl;
 
 	r[1] = -r[1];
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -287,8 +287,8 @@ bool CommandClass::Negu::exec(long long r[5], int busy_reg[4])
 	unsigned a = static_cast<unsigned> (r[1]);
 	unsigned b = -a;
 	r[1] = static_cast<long long> (b);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -328,8 +328,8 @@ bool CommandClass::Li::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Li" << endl;
 	//MipsSimulator.log << "Execute Li" << endl;
 
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -343,8 +343,8 @@ bool CommandClass::Seq::exec(long long r[5], int busy_reg[4])
 
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a == b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -356,12 +356,10 @@ bool CommandClass::Sge::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sge" << endl;
 	//MipsSimulator.log << "Execute Sge" << endl;
 
-
-
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a >= b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -373,12 +371,10 @@ bool CommandClass::Sgt::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sgt" << endl;
 	//MipsSimulator.log << "Execute Sgt" << endl;
 
-
-
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a > b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -390,12 +386,10 @@ bool CommandClass::Sle::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sle" << endl;
 	//MipsSimulator.log << "Execute Sle" << endl;
 
-
-
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a <= b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -407,12 +401,10 @@ bool CommandClass::Slt::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Slt" << endl;
 	//MipsSimulator.log << "Execute Slt" << endl;
 
-
-
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a < b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -424,12 +416,10 @@ bool CommandClass::Sne::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sne" << endl;
 	//MipsSimulator.log << "Execute Sne" << endl;
 
-
-
 	int a = static_cast<int>(r[1]), b = static_cast<int>(r[2]);
 	r[1] = (a != b) ? 1 : 0;
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -440,8 +430,6 @@ bool CommandClass::B::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute B" << endl;
 	//MipsSimulator.log << "Execute B" << endl;
-
-
 
 	r[1] = r[0];
 	r[4] = 1;
@@ -461,7 +449,6 @@ bool CommandClass::Beq::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Beq" << endl;
 	//MipsSimulator.log << "Execute Beq" << endl;
-
 
 	int a = static_cast<int> (r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a == b) ? 1 : 0;
@@ -483,7 +470,6 @@ bool CommandClass::Bne::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Bne" << endl;
 	//MipsSimulator.log << "Execute Bne" << endl;
 
-
 	int a = static_cast<int> (r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a != b) ? 1 : 0;
 	r[1] = r[2];
@@ -503,8 +489,6 @@ bool CommandClass::Bge::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Bge" << endl;
 	//MipsSimulator.log << "Execute Bge" << endl;
-
-
 
 	int a = static_cast<int>(r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a >= b) ? 1 : 0;
@@ -526,8 +510,6 @@ bool CommandClass::Ble::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Ble" << endl;
 	//MipsSimulator.log << "Execute Ble" << endl;
 
-
-
 	int a = static_cast<int>(r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a <= b) ? 1 : 0;
 	r[1] = r[2];
@@ -548,8 +530,6 @@ bool CommandClass::Bgt::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Bgt" << endl;
 	//MipsSimulator.log << "Execute Bgt" << endl;
 
-
-
 	int a = static_cast<int>(r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a > b) ? 1 : 0;
 	r[1] = r[2];
@@ -569,8 +549,6 @@ bool CommandClass::Blt::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Blt" << endl;
 	//MipsSimulator.log << "Execute Blt" << endl;
-
-
 
 	int a = static_cast<int>(r[4]), b = static_cast<int>(r[1]);
 	r[4] = (a < b) ? 1 : 0;
@@ -630,8 +608,6 @@ bool CommandClass::Blez::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Blez" << endl;
 	//MipsSimulator.log << "Execute Blez" << endl;
 
-
-
 	int a = static_cast<int>(r[4]);
 	r[4] = (a <= 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
@@ -651,8 +627,6 @@ bool CommandClass::Bgez::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Bgez" << endl;
 	//MipsSimulator.log << "Execute Bgez" << endl;
 
-
-
 	int a = static_cast<int>(r[4]);
 	r[4] = (a >= 0) ? 1 : 0;
 	r[0] = UsefulStructures::reg_num::pc;
@@ -671,8 +645,6 @@ bool CommandClass::Bgtz::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Bgtz" << endl;
 	//MipsSimulator.log << "Execute Bgtz" << endl;
-
-
 
 	int a = static_cast<int>(r[4]);
 	r[4] = (a > 0) ? 1 : 0;
@@ -727,8 +699,6 @@ bool CommandClass::Jr::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Jr" << endl;
 	//MipsSimulator.log << "Execute Jr" << endl;
 
-
-
 	r[1] = r[4];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
@@ -743,8 +713,6 @@ bool CommandClass::Jal::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Jal" << endl;
 	//MipsSimulator.log << "Execute Jal" << endl;
-
-
 
 	r[1] = r[0];
 	r[4] = 1;
@@ -766,8 +734,6 @@ bool CommandClass::Jalr::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Jalr" << endl;
 	//MipsSimulator.log << "Execute Jalr" << endl;
 
-
-
 	r[1] = r[4];
 	r[4] = 1;
 	r[0] = UsefulStructures::reg_num::pc;
@@ -785,8 +751,6 @@ bool CommandClass::La::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute La" << endl;
 	//MipsSimulator.log << "Execute La" << endl;
 
-
-
 	r[1] += r[3];
 	r[2] = 0;
 	r[4] = -3;
@@ -802,8 +766,6 @@ bool CommandClass::Lb::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Lb" << endl;
 	//MipsSimulator.log << "Execute Lb" << endl;
-
-
 
 	r[1] += r[3];
 	r[2] = 1;
@@ -821,8 +783,6 @@ bool CommandClass::Lh::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Lh" << endl;
 	//MipsSimulator.log << "Execute Lh" << endl;
 
-
-
 	r[1] += r[3];
 	r[2] = 2;
 	r[4] = -3;
@@ -838,8 +798,6 @@ bool CommandClass::Lw::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Lw" << endl;
 	//MipsSimulator.log << "Execute Lw" << endl;
-
-
 
 	r[1] += r[3];
 	r[2] = 4;
@@ -861,8 +819,6 @@ bool CommandClass::Sb::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sb" << endl;
 	//MipsSimulator.log << "Execute Sb" << endl;
 
-
-
 	r[0] = r[1] + r[3];
 	r[1] = r[4];
 	r[2] = 1;
@@ -882,8 +838,6 @@ bool CommandClass::Sh::exec(long long r[5], int busy_reg[4])
 
 	//clog << "Execute Sh" << endl;
 	//MipsSimulator.log << "Execute Sh" << endl;
-
-
 
 	r[0] = r[1] + r[3];
 	r[1] = r[4];
@@ -905,8 +859,6 @@ bool CommandClass::Sw::exec(long long r[5], int busy_reg[4])
 	//clog << "Execute Sw" << endl;
 	//MipsSimulator.log << "Execute Sw" << endl;
 
-
-
 	r[0] = r[1] + r[3];
 	r[1] = r[4];
 	r[2] = 4;
@@ -916,36 +868,31 @@ bool CommandClass::Sw::exec(long long r[5], int busy_reg[4])
 
 bool CommandClass::Move::exec(long long r[5], int busy_reg[4])
 {
-
 	//clog << "Execute Move" << endl;
 	//MipsSimulator.log << "Execute Move" << endl;
 
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
 bool CommandClass::Mfhi::exec(long long r[5], int busy_reg[4])
 {
-
 	//clog << "Execute Mfhi" << endl;
 	//MipsSimulator.log << "Execute Mfhi" << endl;
 
-	//r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::hi]);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
 bool CommandClass::Mflo::exec(long long r[5], int busy_reg[4])
 {
-
 	//clog << "Execute Mflo" << endl;
 	//MipsSimulator.log << "Execute Mflo" << endl;
 
-	//r[1] = static_cast<long long>(MipsSimulator.reg[UsefulStructures::reg_num::lo]);
-	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	r[4] = 3;
+	usefulstructures.addBusy(static_cast<unsigned>(r[0]), busy_reg);
 	return true;
 }
 
@@ -998,7 +945,6 @@ bool CommandClass::Syscall::exec(long long r[5], int busy_reg[4])
 
 bool CommandClass::Empty::exec(long long r[5], int busy_reg[4])
 {
-
 	//clog << "Execute Empty!!!!" << endl;
 	//MipsSimulator.log << "Execute Empty!!!!" << endl;
 
@@ -1057,10 +1003,8 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 		for (int i = 1; i < 3; ++i) {
 			if (token.rstate[i] == UsefulStructures::r_state::regi) {
 				if (usefulstructures.Busy(token.r[i], busyreg)) {
-
 					//clog << "Find the reg$" << token.r[i] << " is busy and pause" << endl;
 					//MipsSimulator.log << "Find the reg$" << token.r[i] << " is busy and pause" << endl;
-
 
 					state = UsefulStructures::pip_run_state::pause;
 					return;
@@ -1076,8 +1020,6 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 
 				//clog << "r[" << i << "] as a immidiate num: " << res[i] << endl;
 				//MipsSimulator.log << "r[" << i << "] as a immidiate num: " << res[i] << endl;
-
-
 			}
 		}
 
@@ -1260,5 +1202,5 @@ void CommandClass::Command_Base::write_back(long long r[5], int busyreg[4], stri
 	}
 }
 
-CommandClass::Command_Base::~Command_Base(){}
+CommandClass::Command_Base::~Command_Base() {}
 
