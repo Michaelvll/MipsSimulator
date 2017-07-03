@@ -14,6 +14,8 @@ private:
 	UsefulStructures::arguToken argutoken;
 	int op = 0;
 	long long r[5] = { 0 };
+	unsigned myPC = 0;
+	int hash_myPC;
 
 	//int mywait = 0;
 
@@ -25,8 +27,7 @@ private:
 public:
 	// Here should be some useful varient
 	int nowpip = 1;
-	unsigned myPC = 0;
-	PipelineClass(const unsigned & _PC);
+	PipelineClass();
 
 	void StartNext(int &state, bool &memory_busy, int &wait, int busyreg[4]);
 

@@ -30,6 +30,12 @@
     <ClCompile Include="UsefulStructures.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Counter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PredictorClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MipsSimulatorClass.h">
@@ -42,6 +48,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UsefulStructures.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PredictorClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Counter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

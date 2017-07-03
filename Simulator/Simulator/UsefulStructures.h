@@ -23,7 +23,7 @@ public:
 		none, regi, immi
 	};
 	enum pip_run_state {
-		run, pause, clear, stopALL
+		run, pause, clear, predict_taken,stopALL
 	};
 	struct Token {
 		int op = 0;
@@ -43,7 +43,6 @@ public:
 	bool Busy(const int &nowreg, int busyreg[4]);
 	void addBusy(const int &nowreg, int busyreg[4]);
 	void delBusy(const int &nowreg, int busyreg[4]);
-
 };
 
 #endif //USEFULSTRUCTURES
