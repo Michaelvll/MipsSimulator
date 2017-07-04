@@ -66,10 +66,10 @@ Generally,
 ## Some important lists
 ### <b name="meaning_of_r4">The meaning of r[4]</b>
 * r[4] == 0 (Don't Jump): Do nothing in the last two stages
-* r[4] == 1(Jump ins. with start in j): Clear the ins. behind this ins. on the pipline, and pause the pipeline behind until this ins. is finished
-* r[4] == 2(Jal, Jalr): Clear and Write r[1] into reg[r[0]], r[3] into reg[r[2]]
+* r[4] == 1(Jump ins. with start in b): Clear the ins. behind this ins. on the pipline, and pause the pipeline behind until this ins. is finished
+* r[4] == 2(Jal, Jalr): Clear and Write r[1] into reg[r[0]]
 * r[4] == 3(Common Command): Write r[1] into reg[r[0]]
-* r[4] == 4(J, Jr, B): Clear and write r[1] into reg[r[0]]
+* r[4] == 4(J, Jr, B): Do nothing in the last two stages
 * r[4] == 5(Nop): Wait 5 cycles
 * r[4] == -1(Syscall 10): Stopall
 * r[4] == -2(Syscall 17): Stopall and cout << r[2]
