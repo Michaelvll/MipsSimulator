@@ -39,6 +39,6 @@ Counter & Counter::operator--()
 
 bool Counter::istaken()
 {
-	if (c[0])return true;
-	else return false;
+	if (c[0]) return false;
+	else return true;
 }

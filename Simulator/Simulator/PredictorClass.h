@@ -13,8 +13,6 @@ private:
 	char pattern;
 
 public:
-	void pattern_taken();
-	void pattern_untaken();
 	bool istaken();
 	void new_pattern(bool taken);
 };
