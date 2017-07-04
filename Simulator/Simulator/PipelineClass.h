@@ -22,14 +22,14 @@ private:
 	void Instruction_Fetch();
 	void Data_Preparation(int &state,int busyreg[4]);
 	void Execution(int &state, int busyreg[4]);
-	void Memory_Access(bool &memory_busy);
+	void Memory_Access();
 	void Write_Back(int busyreg[4]);
 public:
 	// Here should be some useful varient
 	int nowpip = 1;
 	PipelineClass();
 
-	void StartNext(int &state, bool &memory_busy, int &wait, int busyreg[4]);
+	void StartNext(int &state, int &wait, int busyreg[4]);
 
 };
 
