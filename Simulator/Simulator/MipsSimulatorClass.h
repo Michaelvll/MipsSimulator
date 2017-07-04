@@ -8,6 +8,7 @@
 #include <fstream>
 #include <set>
 #include "UsefulStructures.h"
+#include "PredictorClass.h"
 
 using std::string;
 using std::ostream;
@@ -27,7 +28,7 @@ private:
 	
 	
 public:
-	char* memory;
+	char *memory;
 	unsigned reg[35] = { 0 };
 	unsigned &PC = reg[UsefulStructures::reg_num::pc];
 	std::vector<UsefulStructures::Token> expr;
@@ -36,7 +37,10 @@ public:
 	std::unordered_map<string, int> reg_num_tab;
 	std::unordered_map<string, int> txt_lab_tab;
 	std::unordered_map<string, int> mem_lab_tab;
+	PredictorClass predict_tab[16];
 	int expr_pos = 0, mem_pos = 0;
+	//tmp
+	int condition_jump_num = 0, correct_predict = 0;
 
 	enum type_op_num {
 		sig, unsig

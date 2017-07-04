@@ -141,16 +141,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommandClass.cpp" />
+    <ClCompile Include="Counter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MipsSimulatorClass.cpp" />
     <ClCompile Include="PipelineClass.cpp" />
+    <ClCompile Include="PredictorClass.cpp" />
     <ClCompile Include="UsefulStructures.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Counter.h" />
     <ClInclude Include="MipsSimulatorClass.h" />
     <ClInclude Include="CommandClass.h" />
     <ClInclude Include="PipelineClass.h" />
     <ClInclude Include="UsefulStructures.h" />
+    <ClInclude Include="PredictorClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
