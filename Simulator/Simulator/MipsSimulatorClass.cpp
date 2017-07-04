@@ -3,6 +3,7 @@
 #include <vector>
 #include <deque>
 #include <string>
+#include <cstring>
 using std::string;
 using std::clog;
 using std::endl;
@@ -12,9 +13,7 @@ using std::deque;
 MipsSimulatorClass::MipsSimulatorClass()
 {
 	memory = new char[4 * 1024 * 1024];
-	for (int i = 0; i < 4 * 1024 * 1024; ++i) {
-		memory[i] = 0;
-	}
+	std::memset(memory, 0, 4 * 1024 * 1024);
 	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024;
 
 	// Initialize the unordered_map of register .no

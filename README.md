@@ -10,7 +10,8 @@ This Simulator is used for execute the source code of Mips by simulating the CPU
 
 ## Features
 * Read the code automatically
-* Simulate the technique of five stage pipeline(naive mode)
+* Simulate the technique of five-stage pipeline
+* Branch predictor: Two-level adaptive predictor
 
 ## Implemention Details
 ### Readcode
@@ -63,6 +64,11 @@ Generally,
 4. In MA stage according to the value of r[4] the machine will load data from the RAM or do other corresponding behaviors
 5. In WB stage according to the value of r[4] the machine will write back r[1] to the register at the position of r[0] represents or do other things.
 
+### Two-level adaptive predictor
+The correctness of the predictor is in the appendix
+
+
+
 ## Some important lists
 ### <b name="meaning_of_r4">The meaning of r[4]</b>
 * r[4] == 0 (Don't Jump): Do nothing in the last two stages
@@ -84,3 +90,156 @@ Generally,
 
 ### Commands that will read Rdest (the register represented by the first arguement)
 mul2, mulu2, div2, divu2, beq, bne, bge, ble, bgt, blt, beqz, bnez, blez, bgez, bgtz, bltz, jr, jalr, sb, sh, sw
+
+## Appendix
+### Correctness of the predictor
+
+TEST  lvalue2-5110379024-wuhang
+Condition jump number: 9
+Correct prediction number: 5
+Rate: 0.555556
+
+TEST  gcd-5090379042-jiaxiao
+Condition jump number: 43
+Correct prediction number: 27
+Rate: 0.627907
+
+TEST  manyarguments-5100379110-daibo
+Condition jump number: 13
+Correct prediction number: 8
+Rate: 0.615385
+
+TEST  tak-5090379042-jiaxiao
+Condition jump number: 60644
+Correct prediction number: 47627
+Rate: 0.785354
+
+TEST  builtin-5140519064-youyurong
+Condition jump number: 51
+Correct prediction number: 31
+Rate: 0.607843
+
+TEST  array_test1-mahaojun
+Condition jump number: 59
+Correct prediction number: 43
+Rate: 0.728814
+
+TEST  pi-5090379042-jiaxiao
+Condition jump number: 287364
+Correct prediction number: 287113
+Rate: 0.999127
+
+TEST  class_test-mahaojun
+Condition jump number: 3
+Correct prediction number: 1
+Rate: 0.333333
+
+TEST  hanoi-5100379110-daibo
+Condition jump number: 1038
+Correct prediction number: 641
+Rate: 0.617534
+
+TEST  twinprime-5090379042-jiaxiao
+Condition jump number: 93900
+Correct prediction number: 90726
+Rate: 0.966198
+
+TEST  array_test2-mahaojun
+Condition jump number: 73
+Correct prediction number: 57
+Rate: 0.780822
+
+TEST  basicopt1-5100309127-hetianxing
+Condition jump number: 38580
+Correct prediction number: 38155
+Rate: 0.988984
+
+TEST  qsort-5100379110-daibo
+Condition jump number: 332765
+Correct prediction number: 318855
+Rate: 0.958199
+
+TEST  string_test-huyuncong
+Condition jump number: 110
+Correct prediction number: 71
+Rate: 0.645455
+
+TEST  statement_test-huyuncong
+Condition jump number: 144
+Correct prediction number: 105
+Rate: 0.729167
+
+TEST  hashmap-5100309127-hetianxing
+Condition jump number: 44049
+Correct prediction number: 42566
+Rate: 0.966333
+
+TEST  queens-5100379110-daibo
+Condition jump number: 70033
+Correct prediction number: 54552
+Rate: 0.778947
+
+TEST  multiarray-5100309153-yanghuan
+Condition jump number: 606
+Correct prediction number: 526
+Rate: 0.867987
+
+TEST  function_test-huyuncong
+Condition jump number: 92
+Correct prediction number: 62
+Rate: 0.673913
+
+TEST  heapsort-5100379110-daibo
+Condition jump number: 679042
+Correct prediction number: 615725
+Rate: 0.906755
+
+TEST  horse-5100309153-yanghuan
+Condition jump number: 468141
+Correct prediction number: 444493
+Rate: 0.949485
+
+TEST  superloop-5090379042-jiaxiao
+Condition jump number: 490292
+Correct prediction number: 458806
+Rate: 0.935781
+
+TEST  maxflow-5100379110-daibo
+Condition jump number: 1246529
+Correct prediction number: 1229679
+Rate: 0.986482
+
+TEST  horse3-5100309153-yanghuan
+Condition jump number: 581502
+Correct prediction number: 546809
+Rate: 0.940339
+
+TEST  prime-5100309153-yanghuan
+Condition jump number: 210521
+Correct prediction number: 199732
+Rate: 0.948751
+
+TEST  bulgarian-5110379024-wuhang
+Condition jump number: 113837
+Correct prediction number: 106539
+Rate: 0.935891
+
+TEST  magic-5100309153-yanghuan
+Condition jump number: 96705
+Correct prediction number: 78715
+Rate: 0.81397
+
+TEST  expr-5110309085-jintianxing
+Condition jump number: 107
+Correct prediction number: 87
+Rate: 0.813084
+
+TEST  horse2-5100309153-yanghuan
+Condition jump number: 486501
+Correct prediction number: 467454
+Rate: 0.960849
+
+TEST  spill2-5100379110-daibo
+Condition jump number: 6224
+Correct prediction number: 6192
+Rate: 0.994859
