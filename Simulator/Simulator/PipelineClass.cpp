@@ -35,8 +35,10 @@ void PipelineClass::Data_Preparation(int &state, int busyreg[4])
 	//clogtoken << endl;
 	//MipsSimulator.log << token << endl;
 	if (token.op >= 27 && token.op <= 38) {
+		//tmp
+
 		// Get the last 4 bits for hash
-		hash_myPC = myPC % 16;
+		hash_myPC = myPC & 0xF;
 		//clog << Get the hash of myPC: " << static_cast<int>(hash_myPC) << endl;
 		//MipsSimulator.log << "Get the hash of myPC: " << hash_myPC << endl;
 
@@ -75,8 +77,13 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 	/// Register that will be written in is locked into busy mode
 	//clog <<"---\nExecution for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
 	//MipsSimulator.log << "---\nExecution for the instruction at PC: " << myPC << " whose op is " << token.op << endl;
-
-	bool ok = MipsSimulator.op_class_tab[op]->exec(r, busyreg);
+	
+	//tmp
+	if (token.op >= 27 && token.op <= 38) {
+		MipsSimulator.condition_jump_num++;
+	}
+	
+		bool ok = MipsSimulator.op_class_tab[op]->exec(r, busyreg);
 	if (ok) {
 		//clog << "Get a common command and run" << endl;
 		//MipsSimulator.log << "Get a common command and run" << endl;
@@ -95,6 +102,9 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 				//MipsSimulator.log << "The prediction get wrong, clear the instructions before this one and change plan to change the PC back to: " << r[1] << endl;
 			}
 			else {
+				//tmp
+				MipsSimulator.correct_predict++;
+
 				// The prediction is correct
 				state = UsefulStructures::pip_run_state::run;
 				r[1] = -1;
@@ -107,6 +117,9 @@ void PipelineClass::Execution(int &state, int busyreg[4])
 			//MipsSimulator.log << "Get a jump command and clear the instructions before this one" << endl;
 			MipsSimulator.predict_tab[hash_myPC].new_pattern(true);
 			if (state == UsefulStructures::pip_run_state::predict_taken) {
+				//tmp
+				MipsSimulator.correct_predict++;
+
 				// The prediction is correct
 				state = UsefulStructures::pip_run_state::run;
 				r[1] = -1;

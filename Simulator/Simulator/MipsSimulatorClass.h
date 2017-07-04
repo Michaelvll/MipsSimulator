@@ -39,6 +39,8 @@ public:
 	std::unordered_map<string, int> mem_lab_tab;
 	PredictorClass predict_tab[16];
 	int expr_pos = 0, mem_pos = 0;
+	//tmp
+	int condition_jump_num = 0, correct_predict = 0;
 
 	enum type_op_num {
 		sig, unsig

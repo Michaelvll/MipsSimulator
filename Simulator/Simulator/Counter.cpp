@@ -6,7 +6,7 @@ Counter::Counter(){
 	// 1: weakly taken
 	// 2: weakly untaken
 	// 3: strongly untaken
-	c[0] = 1;
+	c[0] = 0;
 	c[1] = 1;
 }
 

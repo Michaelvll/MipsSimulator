@@ -172,6 +172,9 @@ MipsSimulatorClass::MipsSimulatorClass()
 }
 MipsSimulatorClass::~MipsSimulatorClass()
 {
+	clog << "Condition jump number: " << condition_jump_num << endl;
+	clog << "Correct prediction number: " << correct_predict << endl;
+	clog << "Rate: " << double(correct_predict)/condition_jump_num  << endl;
 	for (auto x : op_class_tab) {
 		delete x;
 	}
@@ -819,6 +822,7 @@ void MipsSimulatorClass::pipeline()
 	//log <<  "===================================================================================================" << endl;
 	//clog << ===================================================================================================" << endl;
 	//log <<  "===================================================================================================" << endl;
+	clog << "Cycle: " << cycle << endl;
 
 	log.close();
 
