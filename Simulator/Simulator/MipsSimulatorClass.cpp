@@ -767,8 +767,6 @@ void MipsSimulatorClass::pipeline()
 	while (true) {
 		++cycle;
 
-		bool memory_busy = false;
-
 		if (PC < expr.size() && (line.empty() || ((run_state == UsefulStructures::pip_run_state::run
 			|| run_state == UsefulStructures::pip_run_state::predict_taken)&&line.back().nowpip > 1)))
 			line.push_back(PipelineClass());
@@ -796,7 +794,7 @@ void MipsSimulatorClass::pipeline()
 		//log <<  "Cycle " << cycle << " START" << endl;
 
 		for (deque<PipelineClass>::iterator it = line.begin(); it != line.end(); ++it) {
-			it->StartNext(run_state, memory_busy, wait, busyreg);
+			it->StartNext(run_state, wait, busyreg);
 		}
 
 		if (run_state == UsefulStructures::pip_run_state::stopALL) {

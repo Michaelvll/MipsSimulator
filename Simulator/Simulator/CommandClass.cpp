@@ -1067,7 +1067,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 	}
 }
 
-void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy)
+void CommandClass::Command_Base::memory_access(long long r[5])
 {
 	if (r[4] == -9) {
 		char c = MipsSimulator.memory[r[2]];
@@ -1082,7 +1082,6 @@ void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy
 		//clog <<  write back to the I/O device with the string " << s << endl;
 		//MipsSimulator.log << " write back to the I/O device with the string " << s << endl;
 		cout << s;
-		memory_busy = true;
 	}
 	else if (r[4] == -6) {
 		/// syscall
@@ -1105,7 +1104,6 @@ void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy
 		//clog << r[4] is -3, and get a number from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[1] + r[2] - 1 << ")  and the number is " << *(reinterpret_cast<unsigned*>(tmp)) << endl;
 		//MipsSimulator.log << "r[4] is -3, and get a number from the mem[r[0]] to mem[r[0]+r[2]-1](" << r[1] << ", " << r[1] + r[2] - 1 << ")  and the number is " << *(reinterpret_cast<unsigned*>(tmp)) << endl;
 		if (r[2] != 0) r[1] = *(reinterpret_cast<unsigned*>(tmp));
-		memory_busy = true;
 	}
 	else if (r[4] == -11) {
 		string s;
@@ -1121,7 +1119,6 @@ void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy
 			MipsSimulator.memory[static_cast<unsigned>(r[2]) + i] = s[i];
 		}
 		//if (r[2] + s.length() > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[2]) + s.length();
-		memory_busy = true;
 	}
 	else if (r[4] == -2) {
 		//clog <<  write back to the I/O device for syscall 17 with the int " << static_cast<int>(r[2]) << endl;
@@ -1137,7 +1134,6 @@ void CommandClass::Command_Base::memory_access(long long r[5], bool &memory_busy
 			MipsSimulator.memory[r[0] + i] = tmp[i];
 		}
 		//if (r[0] + r[2] > MipsSimulator.mem_pos) MipsSimulator.mem_pos = static_cast<int>(r[0] + r[2]);
-		memory_busy = true;
 	}
 	else if (r[4] == -7) {
 		//clog <<  write back to the I/O device for syscall 1 with the int " << static_cast<int>(r[2]) << endl;

@@ -11,7 +11,7 @@ public:
 		bool read_first_reg = false;
 		void data_preparation(const UsefulStructures::Token &token, long long res[5], int &state, int busyreg[4]);
 		virtual bool exec(long long r[5], int busy_reg[4]) = 0;
-		void memory_access(long long r[5], bool &memory_busy);
+		void memory_access(long long r[5]);
 		void write_back(long long r[5], int busyreg[4]);
 		virtual ~Command_Base();
 	};
