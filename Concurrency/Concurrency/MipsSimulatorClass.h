@@ -30,8 +30,7 @@ public:
   unsigned &PC = reg[UsefulStructures::reg_num::pc];
   std::vector<UsefulStructures::Token> expr;
   std::unordered_map<string, UsefulStructures::op_num> op_num_tab;
-  CommandClass::Command_Base
-      *op_class_tab[UsefulStructures::op_num::syscall + 1];
+  CommandClass::Command_Base* op_class_tab[UsefulStructures::op_num::syscall + 1];
   std::unordered_map<string, int> reg_num_tab;
   std::unordered_map<string, int> txt_lab_tab;
   std::unordered_map<string, int> mem_lab_tab;
