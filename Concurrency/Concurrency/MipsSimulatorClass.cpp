@@ -849,71 +849,60 @@ void MipsSimulatorClass::pipeline() {
 	PC = txt_lab_tab["main"];
 	unsigned long long cycle = 0;
 
-	mutex edl;
-	bool end = false;
+	atomic<bool> end;
+	end = false;
 
-	mutex rdy;
-	atomic<bool> ready[5] = { 1,1,1,1,1 };
-	condition_variable rdycv;
+	atomic<bool> ready0, ready1, ready2, ready3, ready4;
+	ready0 = true; ready1 = true; ready2 = true; ready3 = true; ready4 = true;
 
 	thread IF([&] {
 		while (true) {
-			while (ready[0]);
+			while (ready0);
 
-			unique_lock<mutex> ed(edl);
 			if (end) break;
-			ed.unlock();
 
 			stage.Instruction_Fetch();
-			ready[0] = true;
+			ready0 = true;
 		}
 	});
 	thread ID([&] {
 		while (true) {
-			while (ready[1]);
+			while (ready1);
 
-			unique_lock<mutex> ed(edl);
 			if (end) break;
-			ed.unlock();
 
 			stage.Data_Preparation();
-			ready[1] = true;
+			ready1 = true;
 		}
 	});
 	thread EX([&] {
 		while (true) {
-			while (ready[2]);
+			while (ready2);
 			
-			unique_lock<mutex> ed(edl);
 			if (end) break;
-			ed.unlock();
 
 			stage.Execution();
-			ready[2] = true;
+			ready2 = true;
 		}
 	});
 	thread MA([&] {
 		while (true) {
-			while (ready[3]);
+			while (ready3);
 
-			unique_lock<mutex> ed(edl);
 			if (end) break;
-			ed.unlock();
 			
 			stage.Memory_Access();
-			ready[3] = true;
+			ready3 = true;
 		}
 	});
 	thread WB([&] {
 		while (true) {
-			while (ready[4]);
+			while (ready4);
 
-			unique_lock<mutex> ed(edl);
 			if (end) break;
-			ed.unlock();
 
 			stage.Write_Back();
-			ready[4] = true;
+			ready4 = true;
 		}
 	});
 
@@ -935,9 +924,7 @@ void MipsSimulatorClass::pipeline() {
 		}
 		run_state = UsefulStructures::pip_run_state::run;
 
-		for (int i = 0; i < 5; ++i) {
-			ready[i] = false;
-		}
+		ready0 = false; ready1 = false; ready2 = false; ready3 = false; ready4 = false;
 
 		// clog << cache << endl;
 		// log << "Cycle: " << cycle << endl;
@@ -948,7 +935,7 @@ void MipsSimulatorClass::pipeline() {
 		//stage.Data_Preparation();
 		//stage.Instruction_Fetch();
 
-		while (!ready[0] || !ready[1] || !ready[2] || !ready[3] || !ready[4]);
+		while (!ready0 || !ready1 || !ready2 || !ready3 || !ready4);
 
 		if (run_state == UsefulStructures::pip_run_state::run) {
 			cache.Change(tmpcache);
@@ -969,16 +956,10 @@ void MipsSimulatorClass::pipeline() {
 			cycle += 5;
 		}
 		else {
-			for (int i = 0; i < 5; ++i) {
-				ready[i] = false;
-			}
-
-			unique_lock<mutex> ed(edl);
 			end = true;
-			ed.unlock();
 
-			rdycv.notify_all();
-
+			ready0 = false; ready1 = false; ready2 = false; ready3 = false; ready4 = false;
+			
 			IF.join();
 			ID.join();
 			EX.join();
