@@ -913,35 +913,33 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 		/// r[1] is the content of $v0
 		/// r[2] is the content of $a0
 		/// r[3] is the content of $a1
+		
+
+		unique_lock<mutex> lk(MipsSimulator.bsyrg);
 		res[0] = UsefulStructures::reg_num::v0;
 		res[1] = MipsSimulator.reg[UsefulStructures::reg_num::v0];
 		res[2] = MipsSimulator.reg[UsefulStructures::reg_num::a0];
 		res[3] = MipsSimulator.reg[UsefulStructures::reg_num::a1];
 
-		unique_lock<mutex> lk(MipsSimulator.bsyrg);
-		if (usefulstructures.Busy(UsefulStructures::reg_num::v0,
-			MipsSimulator.busyreg)) {
+		if (usefulstructures.Busy(UsefulStructures::reg_num::v0, MipsSimulator.busyreg)) {
 			MipsSimulator.run_state = UsefulStructures::pip_run_state::pause;
 			// clog << "Find the reg$v0 is busy and pause" << endl;
 			// MipsSimulator.log << "Find the reg$v0 is busy and pause" << endl;
 			return;
 		}
-		if (usefulstructures.Busy(UsefulStructures::reg_num::a0,
-			MipsSimulator.busyreg) &&
-			res[1] != 5 && res[1] != 10) {
+		if (usefulstructures.Busy(UsefulStructures::reg_num::a0, MipsSimulator.busyreg) && res[1] != 5 && res[1] != 10) {
 			MipsSimulator.run_state = UsefulStructures::pip_run_state::pause;
 			// clog << "Find the reg$a0 is busy and pause" << endl;
 			// MipsSimulator.log << "Find the reg$a0 is busy and pause" << endl;
 			return;
 		}
-		if (usefulstructures.Busy(UsefulStructures::reg_num::a1,
-			MipsSimulator.busyreg) &&
-			res[1] == 8) {
+		if (usefulstructures.Busy(UsefulStructures::reg_num::a1, MipsSimulator.busyreg) && res[1] == 8) {
 			MipsSimulator.run_state = UsefulStructures::pip_run_state::pause;
 			// clog << "Find the reg$a1 is busy and pause" << endl;
 			// MipsSimulator.log << "Find the reg$a1 is busy and pause" << endl;
 			return;
 		}
+		
 
 		// clog << "Get r[0] as reg$v0: " << res[0] << "\nr[1] as content of
 		// regi$v0: " << res[1] << "\nr[2] as the content of reg$a0: " << res[2] <<
@@ -991,8 +989,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 
 		if (token.op == UsefulStructures::op_num::mfhi) {
 			unique_lock<mutex> lk(MipsSimulator.bsyrg);
-			if (usefulstructures.Busy(UsefulStructures::reg_num::hi,
-				MipsSimulator.busyreg)) {
+			if (usefulstructures.Busy(UsefulStructures::reg_num::hi, MipsSimulator.busyreg)) {
 				// clog << "Find the reg$hi is busy and pause" << endl;
 				// MipsSimulator.log << "Find the reg$hi is busy and pause" << endl;
 
@@ -1008,8 +1005,7 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 		}
 		else if (token.op == UsefulStructures::op_num::mflo) {
 			unique_lock<mutex> lk(MipsSimulator.bsyrg);
-			if (usefulstructures.Busy(UsefulStructures::reg_num::lo,
-				MipsSimulator.busyreg)) {
+			if (usefulstructures.Busy(UsefulStructures::reg_num::lo,MipsSimulator.busyreg)) {
 				// clog << "Find the reg$lo is busy and pause" << endl;
 				// MipsSimulator.log << "Find the reg$lo is busy and pause" << endl;
 
@@ -1024,14 +1020,12 @@ void CommandClass::Command_Base::data_preparation(const UsefulStructures::Token 
 			// res[1] << '\n';
 		}
 
-		if (MipsSimulator.op_class_tab[token.op]->read_first_reg &&
-			token.rstate[0] == UsefulStructures::r_state::regi) {
+		if (MipsSimulator.op_class_tab[token.op]->read_first_reg && token.rstate[0] == UsefulStructures::r_state::regi) {
 			// clog << "Now op needs to read the first reg$" << res[0] << endl;
 			// MipsSimulator.log << "Now op needs to read the first reg$" << res[0] <<
 			// endl;
 			unique_lock<mutex> lk(MipsSimulator.bsyrg);
-			if (usefulstructures.Busy(static_cast<unsigned>(res[0]),
-				MipsSimulator.busyreg)) {
+			if (usefulstructures.Busy(static_cast<unsigned>(res[0]), MipsSimulator.busyreg)) {
 				MipsSimulator.run_state = UsefulStructures::pip_run_state::pause;
 				// clog << "Find the reg$"<< res[0] <<" is busy and pause" << endl;
 				// MipsSimulator.log << "Find the reg$" << res[0] << " is busy and
@@ -1147,6 +1141,7 @@ void CommandClass::Command_Base::memory_access(long long r[5]) {
 		// (r[2]) << endl;
 		// MipsSimulator.log << " allocate new place with length of " <<
 		// static_cast<unsigned> (r[2]) << endl;
+		r[1] = MipsSimulator.mem_pos;
 		MipsSimulator.mem_pos += static_cast<int>(r[2]);
 	}
 	else if (r[4] < -11 || r[4] > 5 || r[4] == 4) {
@@ -1167,10 +1162,12 @@ void CommandClass::Command_Base::write_back(long long r[5]) {
 		MipsSimulator.reg[r[0]] = static_cast<unsigned>(r[1]);
 		unique_lock<mutex> lk(MipsSimulator.bsyrg);
 		usefulstructures.delBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
+		lk.unlock();
 		if (r[4] == 2) {
 			// MipsSimulator.log << "write back to reg$" << r[2] << " using the data "
 			// << static_cast<unsigned>(r[3]) << endl;
 			MipsSimulator.reg[r[2]] = static_cast<unsigned>(r[3]);
+			lk.lock();
 			usefulstructures.delBusy(static_cast<int>(r[2]), MipsSimulator.busyreg);
 		}
 	}
@@ -1196,7 +1193,7 @@ void CommandClass::Command_Base::write_back(long long r[5]) {
 		// MipsSimulator.log << " write back the first address of the allocated
 		// space in memory of the length of "<< static_cast<int>(r[2]) <<" back to
 		// reg$" << r[0] << endl;
-		MipsSimulator.reg[r[0]] = MipsSimulator.mem_pos - static_cast<int>(r[2]);
+		MipsSimulator.reg[r[0]] = static_cast<unsigned>(r[1]);
 		unique_lock<mutex> lk(MipsSimulator.bsyrg);
 		usefulstructures.delBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
 	}
@@ -1217,8 +1214,7 @@ void CommandClass::Command_Base::write_back(long long r[5]) {
 			// reg$" << r[0] << endl;
 		}
 		unique_lock<mutex> lk(MipsSimulator.bsyrg);
-		usefulstructures.delBusy(static_cast<unsigned>(r[0]),
-			MipsSimulator.busyreg);
+		usefulstructures.delBusy(static_cast<unsigned>(r[0]), MipsSimulator.busyreg);
 	}
 }
 
