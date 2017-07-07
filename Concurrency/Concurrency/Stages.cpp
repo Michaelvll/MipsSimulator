@@ -69,47 +69,36 @@ void Stages::Data_Preparation() {
 				token.op == UsefulStructures::op_num::mulu2 ||
 				token.op == UsefulStructures::op_num::div2 ||
 				token.op == UsefulStructures::op_num::div2) {
-				std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
-				usefulstructures.addBusy(UsefulStructures::reg_num::lo,
-					MipsSimulator.busyreg);
-				usefulstructures.addBusy(UsefulStructures::reg_num::hi,
-					MipsSimulator.busyreg);
+				usefulstructures.addBusy(UsefulStructures::reg_num::lo,MipsSimulator.busyreg);
+				usefulstructures.addBusy(UsefulStructures::reg_num::hi,MipsSimulator.busyreg);
 			}
 			else {
-				std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
 				usefulstructures.addBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
 			}
 		}
 		else if (token.op >= UsefulStructures::op_num::b &&
 			token.op <= UsefulStructures::op_num::jr) {
 			MipsSimulator.run_state = UsefulStructures::pip_run_state::jump;
-			std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
-			usefulstructures.addBusy(UsefulStructures::reg_num::pc,
-				MipsSimulator.busyreg);
+			usefulstructures.addBusy(UsefulStructures::reg_num::pc, MipsSimulator.busyreg);
 		}
 		else if (token.op == UsefulStructures::op_num::jal ||
 			token.op == UsefulStructures::op_num::jalr) {
 			MipsSimulator.run_state = UsefulStructures::pip_run_state::jump;
 			r[2] = 31;
 			r[3] = data.PC + 1;
-			std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
-			usefulstructures.addBusy(UsefulStructures::reg_num::pc,
-				MipsSimulator.busyreg);
+			usefulstructures.addBusy(UsefulStructures::reg_num::pc,MipsSimulator.busyreg);
 			usefulstructures.addBusy(31, MipsSimulator.busyreg);
 		}
 		else if (token.op >= UsefulStructures::op_num::la &&
 			token.op <= UsefulStructures::op_num::lw) {
-			std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
 			usefulstructures.addBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
 		}
 		else if (token.op >= UsefulStructures::op_num::move &&
 			token.op <= UsefulStructures::op_num::mflo) {
-			std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
 			usefulstructures.addBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
 		}
 		else if (token.op == UsefulStructures::op_num::syscall) {
 			if (r[1] == 5 || r[1] == 9) {
-				std::unique_lock<std::mutex> lk(MipsSimulator.bsyrg);
 				usefulstructures.addBusy(static_cast<int>(r[0]), MipsSimulator.busyreg);
 			}
 			else if (r[1] == 10 || r[1] == 17) {

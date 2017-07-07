@@ -33,6 +33,8 @@ MipsSimulatorClass::MipsSimulatorClass() {
 	}
 	reg[UsefulStructures::reg_num::sp] = 4 * 1024 * 1024;
 
+	for (int i = 0; i < 4; ++i) busyreg[i] = -1;
+
 	// Initialize the unordered_map of register .no
 	reg_num_tab["zero"] = UsefulStructures::reg_num::zero;
 	reg_num_tab["at"] = UsefulStructures::reg_num::at;

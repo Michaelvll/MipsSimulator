@@ -1,4 +1,6 @@
 #include "UsefulStructures.h"
+#include <atomic>
+using std::atomic;
 
 UsefulStructures usefulstructures;
 
@@ -38,7 +40,7 @@ operator=(const Token &rt) {
   return *this;
 }
 
-bool UsefulStructures::Busy(const int &nowreg, int busyreg[4]) {
+bool UsefulStructures::Busy(const int &nowreg, atomic<int> busyreg[4]) {
   for (int i = 0; i < 4; ++i) {
     if (nowreg == busyreg[i])
       return true;
@@ -46,7 +48,7 @@ bool UsefulStructures::Busy(const int &nowreg, int busyreg[4]) {
   return false;
 }
 
-void UsefulStructures::addBusy(const int &nowreg, int busyreg[4]) {
+void UsefulStructures::addBusy(const int &nowreg, atomic<int> busyreg[4]) {
   if (Busy(nowreg, busyreg))
     return;
   // For debug
@@ -64,7 +66,7 @@ void UsefulStructures::addBusy(const int &nowreg, int busyreg[4]) {
     std::cerr << "Failed to put in the busy reg!!!!!!!!!!" << std::endl;
 }
 
-void UsefulStructures::delBusy(const int &nowreg, int busyreg[4]) {
+void UsefulStructures::delBusy(const int &nowreg, atomic<int> busyreg[4]) {
   for (int i = 0; i < 4; ++i) {
     if (nowreg == busyreg[i]) {
       busyreg[i] = -1;
