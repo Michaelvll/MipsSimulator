@@ -11,6 +11,8 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <atomic>
+using std::atomic;
 using std::string;
 using std::ostream;
 
@@ -37,7 +39,7 @@ public:
   int expr_pos = 0, mem_pos = 0;
   int run_state = UsefulStructures::pip_run_state::run;
 
-  int busyreg[4] = {-1, -1, -1, -1};
+  atomic<int> busyreg[4];
   std::mutex bsyrg;
 
   std::ofstream log;

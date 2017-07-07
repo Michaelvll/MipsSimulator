@@ -1,6 +1,8 @@
 #ifndef USEFULSTRUCTURES
 #define USEFULSTRUCTURES
 #include <iostream>
+#include <atomic>
+using std::atomic;
 using std::ostream;
 
 class UsefulStructures {
@@ -40,9 +42,9 @@ public:
 		arguToken & operator=(const Token& rt);
 		friend ostream& operator<<(ostream & out, const arguToken &token);
 	};
-	bool Busy(const int &nowreg, int busyreg[4]);
-	void addBusy(const int &nowreg, int busyreg[4]);
-	void delBusy(const int &nowreg, int busyreg[4]);
+	bool Busy(const int &nowreg, atomic<int> busyreg[4]);
+	void addBusy(const int &nowreg, atomic<int> busyreg[4]);
+	void delBusy(const int &nowreg, atomic<int> busyreg[4]);
 
 };
 
