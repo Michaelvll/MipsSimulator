@@ -859,7 +859,7 @@ void MipsSimulatorClass::pipeline() {
 
 	thread IF([&] {
 		while (true) {
-			while (ready0);
+			while (ready0)yield();
 
 			if (end) break;
 
@@ -869,7 +869,7 @@ void MipsSimulatorClass::pipeline() {
 	});
 	thread ID([&] {
 		while (true) {
-			while (ready1);
+			while (ready1)yield();
 
 			if (end) break;
 
@@ -879,7 +879,7 @@ void MipsSimulatorClass::pipeline() {
 	});
 	thread EX([&] {
 		while (true) {
-			while (ready2);
+			while (ready2)yield();
 			
 			if (end) break;
 
@@ -889,7 +889,7 @@ void MipsSimulatorClass::pipeline() {
 	});
 	thread MA([&] {
 		while (true) {
-			while (ready3);
+			while (ready3)yield();
 
 			if (end) break;
 			
@@ -899,7 +899,7 @@ void MipsSimulatorClass::pipeline() {
 	});
 	thread WB([&] {
 		while (true) {
-			while (ready4);
+			while (ready4)yield();
 
 			if (end) break;
 
@@ -937,7 +937,7 @@ void MipsSimulatorClass::pipeline() {
 		//stage.Data_Preparation();
 		//stage.Instruction_Fetch();
 
-		while (!ready0 || !ready1 || !ready2 || !ready3 || !ready4);
+		while (!ready0 || !ready1 || !ready2 || !ready3 || !ready4)yield();
 
 		if (run_state == UsefulStructures::pip_run_state::run) {
 			cache.Change(tmpcache);
